@@ -1,0 +1,10 @@
+{
+	"niji": {
+		"type": "video",
+		"source": "https://www.youtube.com/watch?v=ckOlIquCrCA"
+	},
+	"bestsport": {
+		"type": "image",
+		"source": "./images/smile.png"
+	}
+}
