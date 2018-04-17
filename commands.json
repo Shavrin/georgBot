@@ -1,10 +1,10 @@
 {
-	"niji": {
-		"type": "video",
-		"source": "https://www.youtube.com/watch?v=ckOlIquCrCA"
+	"google": {
+		"author": "Shavrin",
+		"source": "https://www.google.com"
 	},
-	"bestsport": {
-		"type": "image",
-		"source": "./images/smile.png"
+	"link": {
+		"author": "Shavrin",
+		"source": "xD"
 	}
 }
