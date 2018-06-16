@@ -1,4 +1,4 @@
 # nirvashBot
 A simple discord bot.
-
-#TODO: Database 
+# To launch, insert you auth code into auth.js and type `node bot.js`. That's it.
+# TODO: Database 
