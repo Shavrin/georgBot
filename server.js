@@ -21,7 +21,7 @@ function startBot(){
 	setTimeout(function(){
 		console.log('KILLING BOT');
 		botProcess.kill();
-	}, 20000);
+	}, 1800000);
 
 	function backupSpawn(){
 	console.log('Backup running------------------------------------');
@@ -30,7 +30,9 @@ function startBot(){
 		console.log('STDERR:' + stderr);
 	});
 	console.log('Backup ENDED-------------------------------------');
-	setTimeout(startBot,5000);
+	console.log('REVIVING BOT');
+
+	setTimeout(startBot,0);
 	}
 	
 	
