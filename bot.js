@@ -6,6 +6,12 @@ const request = require("request");
 
 var commands = require("./commands.json");
 
+process.on('close', function(){
+		console.log('SIGINT -> Destroying client.');
+		client.destroy();
+		process.exit();
+});
+
 const georgDirectives = {
   get: "get",
   create: "create",
