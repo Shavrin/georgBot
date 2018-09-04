@@ -218,7 +218,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
-  if (message.content.substring(0, 5).toLowerCase() === "georg") {
+  if (message.channel.type !== 'dm' && message.content.substring(0, 5).toLowerCase() === "georg") {
     const command = message.content.split(" ");
     const firstParameter = command[1];
 
