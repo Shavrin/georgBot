@@ -44,7 +44,7 @@ function handleCreate(message, command) {
     message.reply("you have to provide me with an url for the item :)");
     return;
   }
-  const author = message.author.username;
+  const author = message.author.id;
   if (commands[itemName]) {
     message.reply(
       "there's already a resource with this name. Use `edit` command to edit it :)"
@@ -77,7 +77,7 @@ function handleDelete(message, command) {
   }
   if (
     commands[itemName] &&
-    message.author.username === commands[itemName].author
+    message.author.id === commands[itemName].author
   ) {
     delete commands[itemName];
 
@@ -145,6 +145,7 @@ function handleHelp(message, command) {
         `\`georg create NAME_OF_ITEM LINK\`\n` +
         `\`georg delete NAME_OF_ITEM\`\n` +
         `\`georg edit NAME_OF_ITEM LINK\`\n` +
+		`\`georg random\`\n` +
         `For more information, type \`georg help COMMAND\``
     );
   }
@@ -160,10 +161,10 @@ function handleEdit(message, command) {
     message.reply(`you have to provide me with an url for the resource!`);
     return;
   }
-  const author = message.author.username;
+  const author = message.author.id;
   if (
     commands[itemName] &&
-    message.author.username === commands[itemName].author
+    message.author.id === commands[itemName].author
   ) {
     commands[itemName] = {
       author: author,
