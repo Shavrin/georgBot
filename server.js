@@ -12,25 +12,25 @@ function startBot(){
 		console.log(`STDERR: ${data.toString()}`);
 	});
 	
-	botProcess.on('close', function(code){
-		console.log('bot closed with code' + code);
+	botProcess.on('close', function(){
+		console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->Deleting bot process and spawning backup process`);
 		delete botProcess;
 		backupSpawn();
 	});
 	
 	setTimeout(function(){
-		console.log('KILLING BOT');
+		console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->KILLING BOT`);
 		botProcess.kill();
 	}, 1800000);
 
 	function backupSpawn(){
-	console.log('Backup running------------------------------------');
+	console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->Backup running------------------------------------`);
 	execSync('sh backup.sh', function(error,stdout,stderr){
 		console.log('STDOUT:' + stdout);
 		console.log('STDERR:' + stderr);
 	});
-	console.log('Backup ENDED-------------------------------------');
-	console.log('REVIVING BOT');
+	console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->Backup ended------------------------------------`);
+	console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->REVIVING BOT`);
 
 	setTimeout(startBot,0);
 	}
