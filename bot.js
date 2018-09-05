@@ -6,12 +6,6 @@ const request = require("request");
 
 var commands = require("./commands.json");
 
-process.on('close', function(){
-		console.log('SIGINT -> Destroying client.');
-		client.destroy();
-		process.exit();
-});
-
 const georgDirectives = {
   get: "get",
   create: "create",
@@ -66,7 +60,7 @@ function handleCreate(message, command) {
     "./commands.json",
     JSON.stringify(commands, null, "\t"),
     function() {
-      console.log(`CREATED COMMAND!:
+      console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->CREATED COMMAND!:
           Author: ${author}
           Item Name: ${itemName}
           source: ${source}`);
@@ -91,7 +85,7 @@ function handleDelete(message, command) {
       "./commands.json",
       JSON.stringify(commands, null, "\t"),
       function() {
-        console.log(`DELETED COMMAND!:\n
+        console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->DELETED COMMAND!:\n
             Item Name: ${itemName}\n`);
         message.reply(`deleted ${itemName} from resources :)`);
       }
@@ -180,7 +174,7 @@ function handleEdit(message, command) {
       "./commands.json",
       JSON.stringify(commands, null, "\t"),
       function() {
-        console.log(`EDITED COMMAND!:
+        console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->EDITED COMMAND!:
           Author: ${author}
           Item Name: ${itemName}
           source: ${source}`);
@@ -220,7 +214,7 @@ function handleRandom(message, command) {
 }
 
 client.on("ready", () => {
-  console.log(`${client.user.username} logged in!`);
+  console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->${client.user.username} logged in!`);
 });
 
 client.on("message", message => {

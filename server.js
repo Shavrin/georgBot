@@ -5,7 +5,7 @@ function startBot(){
 	var botProcess = spawn('node', ['bot.js']);
 	
 	botProcess.stdout.on('data', function(data){
-		console.log(`STDOUT: ${data.toString()}`);
+		console.log(`${data.toString()}`);
 	});
 	
 	botProcess.stderr.on('data', function(data){
