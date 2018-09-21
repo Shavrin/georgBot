@@ -32,15 +32,7 @@ function handleGet(message, command) {
     else {
       message.reply("here you go!\n" + row.source);
     }
-  })
-
-  // const resource = commands[secondParameter];
-
-  // if (!resource) {
-  //   message.reply("couldn't find the resource :(");
-  // } else {
-  //   message.reply("here you go!\n" + resource.source);
-  // }
+  });
 }
 
 function handleCreate(message, command) {
@@ -57,6 +49,20 @@ function handleCreate(message, command) {
     return;
   }
   const author = message.author.id;
+
+  sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
+    if(!row){
+      sql.run("INSERT INTO commands (userID,name,source) VALUES (?,?,?)",[author,itemName,source]);
+      return;
+    }
+    else {
+      message.reply("there's already a resource with this name. Use `edit` command to edit it :)");
+      return;    
+    }
+  })
+
+
+
   if (commands[itemName]) {
     message.reply(
       "there's already a resource with this name. Use `edit` command to edit it :)"
