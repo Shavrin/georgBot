@@ -25,7 +25,7 @@ function handleGet(message, command) {
     return;
   }
 
-  sql.get(`SELECT * FROM commands WHERE name="${message.author.id}"`).then(row => {
+  sql.get(`SELECT * FROM commands WHERE name="${secondParameter}"`).then(row => {
     if(!row){
       message.reply("couldn't find the resource :(");
     }
