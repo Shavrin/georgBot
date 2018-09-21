@@ -53,6 +53,11 @@ function handleCreate(message, command) {
   sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
     if(!row){
       sql.run("INSERT INTO commands (userID,name,source) VALUES (?,?,?)",[author,itemName,source]);
+      console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->CREATED COMMAND!:
+          Author: ${author}
+          Item Name: ${itemName}
+          source: ${source}`);
+      message.reply(`success! created ${itemName}!`);
       return;
     }
     else {
@@ -60,31 +65,6 @@ function handleCreate(message, command) {
       return;    
     }
   })
-
-
-
-  if (commands[itemName]) {
-    message.reply(
-      "there's already a resource with this name. Use `edit` command to edit it :)"
-    );
-    return;
-  }
-
-  commands[itemName] = {
-    author: author,
-    source: source
-  };
-  fs.writeFile(
-    "./commands.json",
-    JSON.stringify(commands, null, "\t"),
-    function() {
-      console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->CREATED COMMAND!:
-          Author: ${author}
-          Item Name: ${itemName}
-          source: ${source}`);
-    }
-  );
-  message.reply(`success! created ${itemName}!`);
 }
 
 function handleDelete(message, command) {
