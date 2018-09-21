@@ -154,30 +154,23 @@ function handleEdit(message, command) {
     return;
   }
   const author = message.author.id;
-  if (
-    commands[itemName] &&
-    message.author.id === commands[itemName].author
-  ) {
-    commands[itemName] = {
-      author: author,
-      source: source
-    };
-    fs.writeFile(
-      "./commands.json",
-      JSON.stringify(commands, null, "\t"),
-      function() {
-        console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->EDITED COMMAND!:
-          Author: ${author}
-          Item Name: ${itemName}
-          source: ${source}`);
-      }
-    );
-    message.reply(`edited item ${itemName}!`);
-  } else {
-    message.reply(
-      "you either not have permissions to edit this item, or it doesn't exist :/"
-    );
-  }
+
+
+
+
+  sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
+    if(!row){
+      message.reply(
+        "you either not have permissions to edit this item, or it doesn't exist :/"
+        );    
+    }
+    else if (message.author.id === row.userID) {
+        sql.run(`UPDATE commands SET source="${source}" WHERE name="${itemName}"`);
+        console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->EDITED COMMAND!:\n
+        Item Name: ${itemName} by ${message.author.id}`);
+        message.reply(`edited item ${itemName}!`);
+}
+  });
 }
 
 function handleCommands(message, command) {
