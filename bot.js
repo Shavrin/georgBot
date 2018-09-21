@@ -124,6 +124,11 @@ function handleHelp(message, command) {
             "`georg edit niji https://www.bing.com`"
         );
         break;
+      case georgDirectives.random:
+        message.reply(
+          "I'll bring you the most random thing I can find!"
+        );
+        break;
       default:
         message.reply(
           "I did not recognize this command :/ type `georg help` for more info."
