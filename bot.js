@@ -73,26 +73,22 @@ function handleDelete(message, command) {
     message.reply("you have to provide me with a name of the item :/");
     return;
   }
-  if (
-    commands[itemName] &&
-    message.author.id === commands[itemName].author
-  ) {
-    delete commands[itemName];
 
-    fs.writeFile(
-      "./commands.json",
-      JSON.stringify(commands, null, "\t"),
-      function() {
+
+
+  sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
+    if(!row){
+      message.reply(
+        "sorry, this item either does not exist or you do not have permissions to delete this resource :/"
+      );    
+    }
+    else if (message.author.id === row.userID) {
+        sql.run(`DELETE FROM commands WHERE name="${itemName}"`);
         console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->DELETED COMMAND!:\n
-            Item Name: ${itemName}\n`);
+        Item Name: ${itemName} by ${message.author.id}`);
         message.reply(`deleted ${itemName} from resources :)`);
       }
-    );
-  } else {
-    message.reply(
-      "sorry, this item either does not exist or you do not have permissions to delete this resource :/"
-    );
-  }
+  });
 }
 
 function handleHelp(message, command) {
