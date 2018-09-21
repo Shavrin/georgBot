@@ -190,20 +190,13 @@ function handleCommands(message, command) {
 }
 
 function handleRandom(message, command) {
-  let numberOfItems = 0;
-  for (key in commands) {
-    numberOfItems++;
-  }
 
-  const rand = Math.floor(Math.random() * numberOfItems);
-  let itemNumber = 0;
-  for (key in commands) {
-    if (itemNumber === rand) {
-      message.reply("the most random thing I found!\n" + commands[key].source);
-      break;
-    }
-    itemNumber++;
-  }
+  sql.all("SELECT * FROM commands").then(rows => {
+      let numberOfItems = rows.length;
+      const rand = Math.floor(Math.random() * numberOfItems);
+      message.reply("the most random thing I found!\n" + rows[rand].source);
+  })
+
 }
 
 client.on("ready", () => {
