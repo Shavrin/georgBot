@@ -74,8 +74,6 @@ function handleDelete(message, command) {
     return;
   }
 
-
-
   sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
     if(!row){
       message.reply(
