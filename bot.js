@@ -3,8 +3,10 @@ const client = new Discord.Client();
 const auth = require("./auth.json");
 const fs = require("fs");
 const request = require("request");
-
+const sql = require("sqlite");
 var commands = require("./commands.json");
+
+sql.open("./commands.sqlite");
 
 const georgDirectives = {
   get: "get",
@@ -22,13 +24,23 @@ function handleGet(message, command) {
     message.reply("what do you want me to get?");
     return;
   }
-  const resource = commands[secondParameter];
 
-  if (!resource) {
-    message.reply("couldn't find the resource :(");
-  } else {
-    message.reply("here you go!\n" + resource.source);
-  }
+  sql.get(`SELECT * FROM commands WHERE name="${message.author.id}"`).then(row => {
+    if(!row){
+      message.reply("couldn't find the resource :(");
+    }
+    else {
+      message.reply("here you go!\n" + row.source);
+    }
+  })
+
+  // const resource = commands[secondParameter];
+
+  // if (!resource) {
+  //   message.reply("couldn't find the resource :(");
+  // } else {
+  //   message.reply("here you go!\n" + resource.source);
+  // }
 }
 
 function handleCreate(message, command) {
@@ -190,10 +202,18 @@ function handleEdit(message, command) {
 
 function handleCommands(message, command) {
   let cmds = "Availible commands:\n";
-  for (item in commands) {
-    cmds += item + "\n";
-  }
-  message.reply(cmds);
+
+  sql.all("SELECT * FROM commands").then(rows => {
+    if(!rows) {
+      message.reply('there are no commands yet :(');
+    }
+    else {
+      rows.forEach(row=>{
+        cmds += row.name + "\n";
+      });
+      message.reply(cmds);
+    }
+  })
 }
 
 function handleRandom(message, command) {
@@ -218,6 +238,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
+  if (message.author.bot) return;
   if (message.channel.type !== 'dm' && message.content.substring(0, 5).toLowerCase() === "georg") {
     const command = message.content.split(" ");
     const firstParameter = command[1];
