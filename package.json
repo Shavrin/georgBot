@@ -1,0 +1,26 @@
+{
+  "name": "georgbot",
+  "version": "1.0.0",
+  "description": "A simple discord Bot.",
+  "main": "server.js",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "eslint": "^5.6.0",
+    "sqlite": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shavrin/georgBot.git"
+  },
+  "author": "Shavrin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shavrin/georgBot/issues"
+  },
+  "homepage": "https://github.com/Shavrin/georgBot#readme"
+}

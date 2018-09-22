@@ -1,6 +1,7 @@
 var spawn = require('child_process').spawn;
 var execSync = require('child_process').execSync;
 startBot();
+
 function startBot() {
 	var botProcess = spawn('node', ['bot.js']);
 
@@ -42,8 +43,5 @@ function startBot() {
 		}
 		return proc.killed;
 	}
-
-
-
 
 }
