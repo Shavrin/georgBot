@@ -4,6 +4,8 @@ const sql = require("sqlite");
 
 const client = new Discord.Client();
 
+sql.open("./commands.sqlite");
+
 const georgDirectives = {
 	get: "get",
 	create: "create",
@@ -174,6 +176,7 @@ function handleCommands(message) {
 	let cmds = "Availible commands:\n";
 
 	sql.all("SELECT * FROM commands").then(rows => {
+		console.log(rows);
 		if (!rows) {
 			message.reply("there are no commands yet :(");
 		} else {
@@ -200,7 +203,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
-	if (message.author.bot || message.channel.type !== "dm") return;
+	if (message.author.bot || message.channel.type === "dm") return;
 	if (message.content.substring(0, 5).toLowerCase() === "georg") {
 		const command = message.content.split(" ");
 		const firstParameter = command[1];
@@ -222,15 +225,14 @@ client.on("message", message => {
 			handleEdit(message, command);
 			break;
 		case georgDirectives.commands:
-			handleCommands(message, command);
+			handleCommands(message);
 			break;
 		case georgDirectives.random:
-			handleRandom(message, command);
+			handleRandom(message);
 			break;
 		}
 	}
 });
 
-sql.open("./commands.sqlite");
 
 client.login(auth.token);
