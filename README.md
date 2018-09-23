@@ -2,7 +2,7 @@
 A discord bot made for the Astral Army channel.
 # Description
 The "Georg" bot uses a simple resource system.
-In few words, every user can create items, which are a name-link pair.
+In few words, every user can create items, which are a `name-link` pair.
 
 For example, using command `create itemName url`, user can create an `itemName-url` pair which they can later ask georg with command `get itemName`.
 ### Example
