@@ -26,7 +26,7 @@ const logger = winston.createLogger({
 			level: "info"
 		}),
 		new (winston.transports.File)({
-			filename: `${logDir}/logs.txt`,
+			filename: `${logDir}/commandsLog.txt`,
 			level: "info"
 		})
 	]

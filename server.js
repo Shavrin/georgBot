@@ -1,12 +1,47 @@
 var spawn = require('child_process').spawn;
 var execSync = require('child_process').execSync;
+const logDir = "log";
+const fs = require("fs");
+const winston = require("winston");
+
+
+if (!fs.existsSync(logDir)) {
+	fs.mkdirSync(logDir);
+}
+
+const {
+	combine,
+	timestamp,
+	printf
+} = winston.format;
+const myFormat = printf(info => {
+	return `${info.timestamp} ${info.message}`;
+});
+const logger = winston.createLogger({
+	format: combine(
+		timestamp(),
+		myFormat
+	),
+	transports: [
+		// colorize the output to the console
+		new(winston.transports.Console)({
+			colorize: true,
+			level: "info"
+		}),
+		new(winston.transports.File)({
+			filename: `${logDir}/serverLog.txt`,
+			level: "info"
+		})
+	]
+});
+
 startBot();
 
 function startBot() {
 	var botProcess = spawn('node', ['bot.js']);
 
 	botProcess.stdout.on('data', function (data) {
-		console.log(`${data.toString()}`);
+		console.log(data.toString());
 	});
 
 	botProcess.stderr.on('data', function (data) {
@@ -14,24 +49,21 @@ function startBot() {
 	});
 
 	botProcess.on('close', function () {
-		console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->Deleting bot process and spawning backup process`);
+		logger.info(`DELETING BOT PROCESS AND SPAWNING BACKUP PROCESS.`);
 		delete botProcess;
 		backupSpawn();
 	});
 
 	setTimeout(function () {
-		console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->KILLING BOT`);
+		logger.info(`KILLING BOT`);
 		botProcess.kill();
-	}, 180000);
+	}, 1800000);
 
 	function backupSpawn() {
-		console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->Backup running------------------------------------`);
-		execSync('sh backup.sh', function (error, stdout, stderr) {
-			console.log('STDOUT:' + stdout);
-			console.log('STDERR:' + stderr);
-		});
-		console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->Backup ended------------------------------------`);
-		console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->REVIVING BOT`);
+		logger.info(`BACKUP RUNNING------------------------------------`);
+		logger.info("\n" + execSync('sh backup.sh').toString());
+		logger.info("BACKUP DONE---------------------------------------");
+		logger.info("REVIVING BOT PROCESS");
 
 		setTimeout(startBot, 0);
 	}
