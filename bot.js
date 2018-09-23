@@ -1,8 +1,37 @@
 const Discord = require("discord.js");
 const auth = require("./auth.json");
 const sql = require("sqlite");
-
+const winston = require("winston");
+const fs = require("fs");
+const logDir = "log";
 const client = new Discord.Client();
+
+if (!fs.existsSync(logDir)) {
+	fs.mkdirSync(logDir);
+}
+
+const { combine, timestamp, printf } = winston.format;
+const myFormat = printf(info => {
+	return `${info.timestamp} ${info.message}`;
+});
+const logger = winston.createLogger({
+	format: combine(
+		timestamp(),
+		myFormat
+	),
+	transports: [
+		// colorize the output to the console
+		new (winston.transports.Console)({
+			colorize: true,
+			level: "info"
+		}),
+		new (winston.transports.File)({
+			filename: `${logDir}/logs.txt`,
+			level: "info"
+		})
+	]
+});
+
 
 sql.open("./commands.sqlite");
 
@@ -22,6 +51,7 @@ function handleGet(message, command) {
 		message.reply("what do you want me to get?");
 		return;
 	}
+	logger.info(`GET! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${secondParameter}`);
 
 	sql.get(`SELECT * FROM commands WHERE name="${secondParameter}"`).then(row => {
 		if (!row) {
@@ -50,10 +80,7 @@ function handleCreate(message, command) {
 	sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
 		if (!row) {
 			sql.run("INSERT INTO commands (userID,name,source) VALUES (?,?,?)", [author, itemName, source]);
-			console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->CREATED COMMAND!:
-			Author: ${author}
-			Item Name: ${itemName}
-			source: ${source}`);
+			logger.info(`CREATE! Username->${message.author.username} AuthorID->${author} ItemName->${itemName} Source->${source}`);
 			message.reply(`success! created ${itemName}!`);
 			return;
 		} else {
@@ -78,8 +105,7 @@ function handleDelete(message, command) {
 			);
 		} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
 			sql.run(`DELETE FROM commands WHERE name="${itemName}"`);
-			console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->DELETED COMMAND!:
-			Item Name: ${itemName} by ${message.author.id}`);
+			logger.info(`DELETE! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
 			message.reply(`deleted ${itemName} from resources :)`);
 		} else {
 			message.reply("you do not have permissions to delete this resource:/");
@@ -88,6 +114,8 @@ function handleDelete(message, command) {
 }
 
 function handleHelp(message, command) {
+	logger.info(`HELP! Username->${message.author.username} AuthorID->${message.author.id}`);
+
 	if (command[2]) {
 		switch (command[2]) {
 		case georgDirectives.get:
@@ -163,8 +191,7 @@ function handleEdit(message, command) {
 			message.reply("sorry, can't find it...");
 		} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
 			sql.run(`UPDATE commands SET source="${source}" WHERE name="${itemName}"`);
-			console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->EDITED COMMAND!:
-			Item Name: ${itemName} by ${message.author.id}`);
+			logger.info(`EDIT! Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
 			message.reply(`edited item ${itemName}!`);
 		} else {
 			message.reply("you don't have permissions to edit this item...");
@@ -173,10 +200,11 @@ function handleEdit(message, command) {
 }
 
 function handleCommands(message) {
+	logger.info(`COMMANDS! Username->${message.author.username} AuthorID->${message.author.id}`);
+
 	let cmds = "Availible commands:\n";
 
 	sql.all("SELECT * FROM commands").then(rows => {
-		console.log(rows);
 		if (!rows) {
 			message.reply("there are no commands yet :(");
 		} else {
@@ -189,6 +217,7 @@ function handleCommands(message) {
 }
 
 function handleRandom(message) {
+	logger.info(`RANDOM! Username->${message.author.username} AuthorID->${message.author.id}`);
 
 	sql.all("SELECT * FROM commands").then(rows => {
 		let numberOfItems = rows.length;
@@ -199,7 +228,7 @@ function handleRandom(message) {
 }
 
 client.on("ready", () => {
-	console.log(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}---->${client.user.username} logged in!`);
+	logger.info("GEORG LOGGED IN!");
 });
 
 client.on("message", message => {
