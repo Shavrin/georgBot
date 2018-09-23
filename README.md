@@ -94,7 +94,8 @@ Logs are send to this repository along with the database. In case something goes
 3. node server.js
 4. PROFIT
 
+
+# Future
 If you have an idea for a feature, send me a message!
 
-::Ideas
 1. Welcome message
