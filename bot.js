@@ -4,7 +4,7 @@ const sql = require("sqlite");
 const winston = require("winston");
 const fs = require("fs");
 const logDir = "log";
-const { responses } = require("./responses.json");
+const responses = require("./responses.json");
 const client = new Discord.Client();
 
 if (!fs.existsSync(logDir)) {
@@ -42,7 +42,7 @@ const georgDirectives = {
 	delete: "delete",
 	help: "help",
 	edit: "edit",
-	commands: "commands",
+	items: "items",
 	random: "random"
 };
 
@@ -69,9 +69,13 @@ function handleCreate(message, command) {
 		message.reply(responses.provideName);
 		return;
 	}
+	if (itemName === "name") {
+		message.reply(responses.badInput);
+		return;
+	}
 	const source = command[3];
 	if (!source) {
-		message.reply(responses.provideUrlAndName);
+		message.reply(responses.provideNameAndUrl);
 		return;
 	}
 	const author = message.author.id;
@@ -96,10 +100,14 @@ function handleDelete(message, command) {
 		message.reply(responses.provideName);
 		return;
 	}
+	if (itemName === "name") {
+		message.reply(responses.badInput);
+		return;
+	}
 
 	sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
 		if (!row) {
-			message.reply(responses.notExists);
+			message.reply(responses.couldntGet);
 		} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
 			sql.run(`DELETE FROM commands WHERE name="${itemName}"`);
 			logger.info(`DELETE! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
@@ -133,12 +141,15 @@ function handleHelp(message, command) {
 		case georgDirectives.random:
 			message.reply(responses.helpRandom);
 			break;
+		case georgDirectives.items:
+			message.reply(responses.helpItems);
+			break;
 		default:
 			message.reply(responses.helpDefault);
 			break;
 		}
 	} else {
-		message.reply();
+		message.reply(responses.help);
 	}
 }
 
@@ -167,14 +178,14 @@ function handleEdit(message, command) {
 	});
 }
 
-function handleCommands(message) {
+function handleItems(message) {
 	logger.info(`COMMANDS! Username->${message.author.username} AuthorID->${message.author.id}`);
 
-	let cmds = responses.commands;
+	let cmds = responses.items;
 
 	sql.all("SELECT * FROM commands").then(rows => {
 		if (!rows) {
-			message.reply(responses.noCommands);
+			message.reply(responses.noItems);
 		} else {
 			rows.forEach(row => {
 				cmds += row.name + "\n";
@@ -222,7 +233,7 @@ client.on("message", message => {
 			handleEdit(message, command);
 			break;
 		case georgDirectives.commands:
-			handleCommands(message);
+			handleItems(message);
 			break;
 		case georgDirectives.random:
 			handleRandom(message);
