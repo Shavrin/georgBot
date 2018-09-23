@@ -66,7 +66,7 @@ function handleGet(message, command) {
 function handleCreate(message, command) {
 	const itemName = command[2];
 	if (!itemName) {
-		message.reply(responses.provideName);
+		message.reply(responses.provideNameAndUrl);
 		return;
 	}
 	if (itemName === "name") {
@@ -75,7 +75,7 @@ function handleCreate(message, command) {
 	}
 	const source = command[3];
 	if (!source) {
-		message.reply(responses.provideNameAndUrl);
+		message.reply(responses.provideUrl);
 		return;
 	}
 	const author = message.author.id;
@@ -156,7 +156,7 @@ function handleHelp(message, command) {
 function handleEdit(message, command) {
 	const itemName = command[2];
 	if (!itemName) {
-		message.reply(responses.provideUrlAndName);
+		message.reply(responses.provideNameAndUrl);
 		return;
 	}
 	const source = command[3];
@@ -167,7 +167,7 @@ function handleEdit(message, command) {
 
 	sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
 		if (!row) {
-			message.reply("sorry, can't find it...");
+			message.reply(responses.couldntGet);
 		} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
 			sql.run(`UPDATE commands SET source="${source}" WHERE name="${itemName}"`);
 			logger.info(`EDIT! Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
@@ -184,7 +184,7 @@ function handleItems(message) {
 	let cmds = responses.items;
 
 	sql.all("SELECT * FROM commands").then(rows => {
-		if (!rows) {
+		if (rows.length === 0) {
 			message.reply(responses.noItems);
 		} else {
 			rows.forEach(row => {
@@ -199,11 +199,12 @@ function handleRandom(message) {
 	logger.info(`RANDOM! Username->${message.author.username} AuthorID->${message.author.id}`);
 
 	sql.all("SELECT * FROM commands").then(rows => {
-		let numberOfItems = rows.length;
-		const rand = Math.floor(Math.random() * numberOfItems);
-		message.reply(responses.random + rows[rand].source);
-	});
-
+		if (rows.length === 0) {message.reply(responses.noItems);}
+		else {
+			let numberOfItems = rows.length;
+			const rand = Math.floor(Math.random() * numberOfItems);
+			message.reply(responses.random + rows[rand].source);
+		}});
 }
 
 client.on("ready", () => {
@@ -232,7 +233,7 @@ client.on("message", message => {
 		case georgDirectives.edit:
 			handleEdit(message, command);
 			break;
-		case georgDirectives.commands:
+		case georgDirectives.items:
 			handleItems(message);
 			break;
 		case georgDirectives.random:
