@@ -93,3 +93,8 @@ Logs are send to this repository along with the database. In case something goes
 2. `npm install`
 3. node server.js
 4. PROFIT
+
+If you have an idea for a feature, send me a message!
+
+::Ideas
+1. Welcome message
