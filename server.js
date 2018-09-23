@@ -57,8 +57,8 @@ function startBot() {
 	setTimeout(function () {
 		logger.info(`KILLING BOT`);
 		botProcess.kill();
-	}, 1800000);
-
+	}, 43200000);
+	//12hours
 	function backupSpawn() {
 		logger.info(`BACKUP RUNNING------------------------------------`);
 		logger.info("\n" + execSync('sh backup.sh').toString());
