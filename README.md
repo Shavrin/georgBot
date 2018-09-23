@@ -85,3 +85,11 @@ Everything is logged to both files in the ./log folder.
 
 Logs are send to this repository along with the database. In case something goes wrong, check there.
 
+# How to run
+
+#### You need node.js and npm to run georg.
+
+1. clone this repository
+2. `npm install`
+3. node server.js
+4. PROFIT
