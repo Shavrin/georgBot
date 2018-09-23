@@ -4,6 +4,7 @@ const sql = require("sqlite");
 const winston = require("winston");
 const fs = require("fs");
 const logDir = "log";
+const { responses } = require("./responses.json");
 const client = new Discord.Client();
 
 if (!fs.existsSync(logDir)) {
@@ -48,14 +49,14 @@ const georgDirectives = {
 function handleGet(message, command) {
 	const secondParameter = command[2];
 	if (!secondParameter) {
-		message.reply("what do you want me to get?");
+		message.reply(responses.whatGet);
 		return;
 	}
 	logger.info(`GET! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${secondParameter}`);
 
 	sql.get(`SELECT * FROM commands WHERE name="${secondParameter}"`).then(row => {
 		if (!row) {
-			message.reply("couldn't find the resource :(");
+			message.reply(responses.couldntGet);
 		} else {
 			message.reply(row.source);
 		}
@@ -65,14 +66,12 @@ function handleGet(message, command) {
 function handleCreate(message, command) {
 	const itemName = command[2];
 	if (!itemName) {
-		message.reply(
-			"you have to provide me with a name for the item and an url :)"
-		);
+		message.reply(responses.provideName);
 		return;
 	}
 	const source = command[3];
 	if (!source) {
-		message.reply("you have to provide me with an url for the item :)");
+		message.reply(responses.provideUrlAndName);
 		return;
 	}
 	const author = message.author.id;
@@ -81,10 +80,10 @@ function handleCreate(message, command) {
 		if (!row) {
 			sql.run("INSERT INTO commands (userID,name,source) VALUES (?,?,?)", [author, itemName, source]);
 			logger.info(`CREATE! Username->${message.author.username} AuthorID->${author} ItemName->${itemName} Source->${source}`);
-			message.reply(`success! created ${itemName}!`);
+			message.reply(`${responses.createSuccess} ${itemName}!`);
 			return;
 		} else {
-			message.reply("there's already a resource with this name. Use `edit` command to edit it :)");
+			message.reply(responses.existingItem);
 			return;
 		}
 	});
@@ -94,21 +93,19 @@ function handleDelete(message, command) {
 
 	const itemName = command[2];
 	if (!itemName) {
-		message.reply("you have to provide me with a name of the item :/");
+		message.reply(responses.provideName);
 		return;
 	}
 
 	sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
 		if (!row) {
-			message.reply(
-				"sorry, I can't find it..."
-			);
+			message.reply(responses.notExists);
 		} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
 			sql.run(`DELETE FROM commands WHERE name="${itemName}"`);
 			logger.info(`DELETE! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
-			message.reply(`deleted ${itemName} from resources :)`);
+			message.reply(`${responses.deleteSuccess} ${itemName}!`);
 		} else {
-			message.reply("you do not have permissions to delete this resource:/");
+			message.reply(responses.noPermissionsDelete);
 		}
 	});
 }
@@ -119,70 +116,41 @@ function handleHelp(message, command) {
 	if (command[2]) {
 		switch (command[2]) {
 		case georgDirectives.get:
-			message.reply(
-				"If you provide me a name of the asset,\n" +
-					" I'll provide it to you. for eg.\n" +
-					"`georg get niji`"
-			);
+			message.reply(responses.helpGet);
 			break;
 		case georgDirectives.help:
-			message.reply("What do you think it does, dummy...");
+			message.reply(responses.helpHelp);
 			break;
 		case georgDirectives.create:
-			message.reply(
-				"If you provide me with a name for the new item\n" +
-					" and an url," +
-					" I'll create a new item for you. For eg.\n" +
-					"`georg create niji https://www.google.com`"
-			);
+			message.reply(responses.helpCreate);
 			break;
 		case georgDirectives.delete:
-			message.reply(
-				"If you provide me with a name of the asset,\n" +
-					" I can delete it for you if you are the author. For eg.\n" +
-					"`georg delete niji`"
-			);
+			message.reply(responses.helpDelete);
 			break;
 		case georgDirectives.edit:
-			message.reply(
-				"If you provide me with a name of the asset,\n" +
-					" I can edit it for you if you are the author. for eg.\n" +
-					"`georg edit niji https://www.bing.com`"
-			);
+			message.reply(responses.helpEdit);
 			break;
 		case georgDirectives.random:
-			message.reply(
-				"I'll bring you the most random thing I can find!"
-			);
+			message.reply(responses.helpRandom);
 			break;
 		default:
-			message.reply(
-				"I did not recognize this command :/ type `georg help` for more info."
-			);
+			message.reply(responses.helpDefault);
 			break;
 		}
 	} else {
-		message.reply(
-			"Here's the list of commands!\n" +
-			"`georg get NAME_OF_ITEM`\n" +
-			"`georg create NAME_OF_ITEM LINK`\n" +
-			"`georg delete NAME_OF_ITEM`\n" +
-			"`georg edit NAME_OF_ITEM LINK`\n" +
-			"`georg random`\n" +
-			"For more information, type `georg help COMMAND`"
-		);
+		message.reply();
 	}
 }
 
 function handleEdit(message, command) {
 	const itemName = command[2];
 	if (!itemName) {
-		message.reply("you have to provide me with a name of the item and an url!");
+		message.reply(responses.provideUrlAndName);
 		return;
 	}
 	const source = command[3];
 	if (!source) {
-		message.reply("you have to provide me with an url for the resource!");
+		message.reply(responses.provideUrl);
 		return;
 	}
 
@@ -192,9 +160,9 @@ function handleEdit(message, command) {
 		} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
 			sql.run(`UPDATE commands SET source="${source}" WHERE name="${itemName}"`);
 			logger.info(`EDIT! Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
-			message.reply(`edited item ${itemName}!`);
+			message.reply(`${responses.editSuccess} ${itemName}!`);
 		} else {
-			message.reply("you don't have permissions to edit this item...");
+			message.reply(responses.editNoPermissions);
 		}
 	});
 }
@@ -202,11 +170,11 @@ function handleEdit(message, command) {
 function handleCommands(message) {
 	logger.info(`COMMANDS! Username->${message.author.username} AuthorID->${message.author.id}`);
 
-	let cmds = "Availible commands:\n";
+	let cmds = responses.commands;
 
 	sql.all("SELECT * FROM commands").then(rows => {
 		if (!rows) {
-			message.reply("there are no commands yet :(");
+			message.reply(responses.noCommands);
 		} else {
 			rows.forEach(row => {
 				cmds += row.name + "\n";
@@ -222,7 +190,7 @@ function handleRandom(message) {
 	sql.all("SELECT * FROM commands").then(rows => {
 		let numberOfItems = rows.length;
 		const rand = Math.floor(Math.random() * numberOfItems);
-		message.reply("the most random thing I found!\n" + rows[rand].source);
+		message.reply(responses.random + rows[rand].source);
 	});
 
 }
