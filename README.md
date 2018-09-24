@@ -105,4 +105,9 @@ If you have an idea for a feature, send me a message!
 
 Ideas List
 1. Welcome message
-2. ...
+2. Logging message edits, and all that jazz
+3. Saving direct images
+4. Items with a category (bestsport)
+5. My items
+6. Text strings
+7. Random quote( fetched from a wiki or something )
