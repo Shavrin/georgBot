@@ -81,7 +81,7 @@ Fetches a random item from Georg's database.
 Template: `georg random`
 ***
 # Backup
-Backup is done every 6 hours, all database changes are send to this repository.
+Backup is done every 3 hours, all database changes and logs are sent to this repository.
 ***
 # Logging
 ***There is no god, only log ~ Confucius***
@@ -105,4 +105,4 @@ If you have an idea for a feature, send me a message!
 
 Ideas List
 1. Welcome message
-
+2. ...
