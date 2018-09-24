@@ -22,5 +22,7 @@
 	"items": "here is the list of all items I have: \n",
 	"noItems": "there are no items yet. Go create some!",
 	"random": "here's the most random thing I found!\n",
-	"badInput": "sorry, you can't use this name."
+	"badInput": "sorry, you can't use this name.",
+	"error": "uh oh, something went wrong! Please try again."
+
 }

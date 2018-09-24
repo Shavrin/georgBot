@@ -40,7 +40,7 @@ const handler = {
 			return;
 		}
 
-		logger.info(`GET! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
+		logger.info(`GET!    Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
 
 		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 			.then(row => {
@@ -83,9 +83,7 @@ const handler = {
 			});
 	},
 
-	delete: function(message, command) {
-
-		const itemName = command[2];
+	delete: function(message, itemName) {
 		if (!itemName) {
 			message.reply(responses.provideName);
 			return;
@@ -94,22 +92,33 @@ const handler = {
 			message.reply(responses.badInput);
 			return;
 		}
+		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
+			.then(row => {
+				if (!row) {
+					message.reply(responses.couldntGet);
+				} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
+					sql.run(`DELETE FROM items WHERE name="${itemName}"`)
+						.then(()=> {
+							logger.info(`DELETE! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
+							message.reply(`${responses.deleteSuccess} ${itemName}!`);
+						})
+						.catch(error => {
+							logger.info(error);
+							message.reply(responses.error);
+						});
 
-		sql.get(`SELECT * FROM items WHERE name="${itemName}"`).then(row => {
-			if (!row) {
-				message.reply(responses.couldntGet);
-			} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
-				sql.run(`DELETE FROM items WHERE name="${itemName}"`);
-				logger.info(`DELETE! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
-				message.reply(`${responses.deleteSuccess} ${itemName}!`);
-			} else {
-				message.reply(responses.noPermissionsDelete);
-			}
-		});
+				} else {
+					message.reply(responses.noPermissionsDelete);
+				}
+			})
+			.catch(error => {
+				logger.info(error);
+				message.reply(responses.error);
+			});
 	},
 
 	help: function(message, command) {
-		logger.info(`HELP! Username->${message.author.username} AuthorID->${message.author.id}`);
+		logger.info(`HELP!   Username->${message.author.username} AuthorID->${message.author.id}`);
 
 		if (command[2]) {
 			switch (command[2]) {
@@ -160,7 +169,7 @@ const handler = {
 				message.reply(responses.couldntGet);
 			} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
 				sql.run(`UPDATE items SET source="${source}" WHERE name="${itemName}"`);
-				logger.info(`EDIT! Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
+				logger.info(`EDIT!   Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
 				message.reply(`${responses.editSuccess} ${itemName}!`);
 			} else {
 				message.reply(responses.editNoPermissions);
@@ -173,7 +182,7 @@ const handler = {
 			{username} = message.author.username,
 			{id} = message.author.id;
 
-		logger.info(`ITEMS! Username->${username} AuthorID->${id}`);
+		logger.info(`ITEMS!  Username->${username} AuthorID->${id}`);
 
 		let cmds = responses.items;
 
@@ -230,7 +239,8 @@ client.on("message", message => {
 				break;
 			}
 			case "delete":{
-				handler.delete(message, parameters);
+				const itemName = parameters[2];
+				handler.delete(message, itemName);
 				break;
 			}
 			case "help":{
