@@ -77,7 +77,7 @@ const handler = {
 			message.reply(responses.provideUrl);
 		}
 		else {
-			const {id,username} = message.author;
+			const {username, id} = message.author;
 			logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
 
 			// Checking if the item with this name already exists.
@@ -115,7 +115,7 @@ const handler = {
 			message.reply(responses.badInput);
 		}
 		else {
-			const {id, username} = message.author;
+			const {username, id} = message.author;
 			logger.info(`DELETE! Username->${username} AuthorID->${id} ItemName->${itemName}`);
 
 			// Checking permissions for this item.
@@ -148,7 +148,7 @@ const handler = {
 	},
 
 	help: function(message, command) {
-		const {id,username} = message.author;
+		const {username, id} = message.author;
 		logger.info(`HELP!   Username->${username} AuthorID->${id}`);
 
 		if (command[2]) {
@@ -191,15 +191,20 @@ const handler = {
 			message.reply(responses.provideUrl);
 		}
 		else {
+			const {username, id} = message.author;
+			logger.info(`EDIT!   Username->${username} AuthorID->${id} itemName->${itemName} source->${source}`);
+
 			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 				.then(row => {
 					if (!row) {
+						// This item doesn't exist.
 						message.reply(responses.couldntGet);
-					} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
+					}
+					// Checking if user is the author of the item, or has a role of Administator/ Moderator.
+					else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "Moderator"].includes(r.name))) {
 						sql.run(`UPDATE items SET source="${source}" WHERE name="${itemName}"`)
 							.then(() => {
 								message.reply(`${responses.editSuccess} ${itemName}!`);
-								logger.info(`EDIT!   Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
 							})
 							.catch(error => {
 								message.reply(responses.error);
@@ -219,6 +224,8 @@ const handler = {
 
 	items: function(message) {
 		const {username, id} = message.author;
+		logger.info(`ITEMS!  Username->${username} AuthorID->${id}`);
+
 		sql.all("SELECT * FROM items")
 			.then(rows => {
 				if (rows.length === 0) {
@@ -229,7 +236,6 @@ const handler = {
 						items += row.name + " | ";
 					});
 					message.reply(items);
-					logger.info(`ITEMS!  Username->${username} AuthorID->${id}`);
 				}
 			})
 			.catch(error => {
@@ -240,11 +246,10 @@ const handler = {
 
 	random: function(message) {
 		const {username, id} = message.author;
+		logger.info(`RANDOM! Username->${username} AuthorID->${id}`);
 
 		sql.all("SELECT * FROM items")
 			.then(rows => {
-				logger.info(`RANDOM! Username->${username} AuthorID->${id}`);
-
 				if (rows.length === 0) {message.reply(responses.noItems);}
 				else {
 					let numberOfItems = rows.length;
