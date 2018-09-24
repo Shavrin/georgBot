@@ -20,6 +20,7 @@ For example, using command `create itemName url`, user can create an `itemName-u
 
 # Available commands
 #### The hot word is `georg`. Can be in uppercase too.
+***
 ## get
 Fetches an item from georg's database.
 Template: `georg get ITEMNAME`
@@ -29,6 +30,7 @@ Template: `georg get ITEMNAME`
 **georg**: @user, https://www.google.com
 
 If requested item doesn't exist, **Georg** will inform that the item doesn't exist. *duh :P*
+***
 ## create
 Creates an item in Georg's database. User has to provide both a **name** for the item and a **url**.
 
@@ -41,7 +43,7 @@ Template: `georg create ITEMNAME URL`
 
 
 **georg**: @user, success! created google!
-
+***
 ## edit
 Edits an existing item in Georg's database. User has to provide georg with a **name** of the item and a new **url**.
 
@@ -53,7 +55,7 @@ Edits can be done by the original author of the item, moderator or administrator
 **user**: georg edit google https://www.bing.com
 
 **georg**: @user, edited item google!
-
+***
 ## delete
 Deletes an existing item in Georg's database. User has to provide georg with a **name** of the item.
 
@@ -65,7 +67,7 @@ Deletes can be done by the original author of the **item**, **moderator** or **a
 **user**: georg delete google
 
 **georg**: @user, deleted item google!
-
+***
 ## help
 Displays a basic help message.
 
@@ -73,18 +75,21 @@ Template: `georg help` | `georg help COMMAND`
 
 #### Example
 `georg help` `georg help get` `georg help create` etc.
+***
 ## random
 Fetches a random item from Georg's database.
 Template: `georg random`
+***
 # Backup
 Backup is done every 6 hours, all database changes are send to this repository.
+***
 # Logging
 ***There is no god, only log ~ Confucius***
 
 Everything is logged to both files in the ./log folder.
 
 Logs are send to this repository along with the database. In case something goes wrong, check there.
-
+***
 # How to run
 
 #### You need node.js and npm to run georg.
@@ -94,8 +99,10 @@ Logs are send to this repository along with the database. In case something goes
 3. node server.js
 4. PROFIT
 
-
+***
 # Future
 If you have an idea for a feature, send me a message!
 
+Ideas List
 1. Welcome message
+
