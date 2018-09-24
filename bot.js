@@ -39,8 +39,10 @@ const
 //Handling commands
 const handler = {
 	get: function(message, itemName) {
-		logger.info(`GET!    Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
+		const {username, id} = message.author;
+		logger.info(`GET!    Username->${username} AuthorID->${id} ItemName->${itemName}`);
 
+		// Checking if user provided the name of the item.
 		if (!itemName) {
 			message.reply(responses.whatGet);
 		}
@@ -48,6 +50,7 @@ const handler = {
 			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 				.then(row => {
 					if (!row) {
+						//The item doesn't exist.
 						message.reply(responses.couldntGet);
 					} else {
 						message.reply(row.source);
@@ -61,12 +64,15 @@ const handler = {
 	},
 
 	create: function(message, itemName, source) {
+		// Checking if user provided the name for the new item.
 		if (!itemName) {
 			message.reply(responses.provideNameAndUrl);
 		}
+		// This string can cause vulnerability in the SQL below.
 		else if (itemName === "name") {
 			message.reply(responses.badInput);
 		}
+		// Checking if user provided the url for the new item.
 		else if (!source) {
 			message.reply(responses.provideUrl);
 		}
@@ -74,9 +80,11 @@ const handler = {
 			const {id,username} = message.author;
 			logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
 
+			// Checking if the item with this name already exists.
 			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 				.then(row => {
 					if (!row) {
+						// We can use the name for the new item.
 						sql.run("INSERT INTO items (userID,name,source) VALUES (?,?,?)", [id, itemName, source])
 							.then(() => {
 								message.reply(`${responses.createSuccess} ${itemName}!`);
@@ -86,6 +94,7 @@ const handler = {
 								logger.info(error);
 							});
 					} else {
+						// The item with this name already exists.
 						message.reply(responses.existingItem);
 					}
 				})
@@ -97,9 +106,11 @@ const handler = {
 	},
 
 	delete: function(message, itemName) {
+		// Checking if user provided the name of the item.
 		if (!itemName) {
 			message.reply(responses.provideName);
 		}
+		// This string can cause vulnerability in the SQL below.
 		else if (itemName === "name") {
 			message.reply(responses.badInput);
 		}
@@ -107,11 +118,15 @@ const handler = {
 			const {id, username} = message.author;
 			logger.info(`DELETE! Username->${username} AuthorID->${id} ItemName->${itemName}`);
 
+			// Checking permissions for this item.
 			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 				.then(row => {
 					if (!row) {
+						// The item doesn't exist.
 						message.reply(responses.couldntGet);
-					} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
+					}
+					// Checking if user is the author of the item, or has a role of Administator/ Moderator.
+					else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "Moderator"].includes(r.name))) {
 						sql.run(`DELETE FROM items WHERE name="${itemName}"`)
 							.then(()=> {
 								message.reply(`${responses.deleteSuccess} ${itemName}!`);
@@ -253,10 +268,13 @@ client.on("ready", () => {
 client.on("message", message => {
 	// Ignore the bots and direct messages.
 	if (message.author.bot || message.channel.type === "dm") return;
+
+	const parameters = message.content.split(" ");
+
 	// Check if message is starting with the hotword.
-	if (message.content.startsWith(config.hotword + " ")) {
-		const parameters = message.content.split(" ");
-		// Getting first parameter which is a command.
+	if (parameters[0] === config.hotword) {
+
+		// First parameter should be a command.
 		if(parameters[1]){
 			switch (parameters[1]) {
 			case "get":{
@@ -305,7 +323,7 @@ client.on("message", message => {
 client.on("error", (error) => logger.info(error));
 client.on("reconnecting", () => logger.info("RECONNECTING"));
 
-
+// Launches the bot and sets the timer for backup.
 function launchBot(){
 	client.login(config.token)
 		.then(() => {
@@ -336,6 +354,6 @@ function backup(){
 		});
 
 }
-
+// Open the database connection.
 sql.open("./items.sqlite");
 launchBot();
