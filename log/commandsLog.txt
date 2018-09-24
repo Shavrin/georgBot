@@ -170,3 +170,15 @@ and the repository exists.
 2018-09-24T13:04:52.252Z RECONNECTING
 2018-09-24T13:04:58.167Z RECONNECTING
 2018-09-24T13:11:58.112Z GEORG LOGGED IN!
+2018-09-24T13:12:18.154Z ERROR: Error: Command failed: sh backup.sh
+ssh: Could not resolve hostname github.com: Name or service not known
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+2018-09-24T13:12:49.463Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T13:12:49.464Z Trying again in 10 seconds
+2018-09-24T13:12:59.480Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T13:12:59.481Z Trying again in 10 seconds
+2018-09-24T13:13:10.123Z GEORG LOGGED IN!
