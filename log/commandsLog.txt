@@ -152,3 +152,21 @@ and the repository exists.
  1 file changed, 67 insertions(+)
 
 2018-09-24T13:03:14.705Z GEORG LOGGED IN!
+2018-09-24T13:03:34.753Z ERROR: Error: Command failed: sh backup.sh
+ssh: Could not resolve hostname github.com: Name or service not known
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+2018-09-24T13:04:04.784Z RECONNECTING
+2018-09-24T13:04:10.780Z RECONNECTING
+2018-09-24T13:04:16.712Z RECONNECTING
+2018-09-24T13:04:22.638Z RECONNECTING
+2018-09-24T13:04:28.560Z RECONNECTING
+2018-09-24T13:04:34.487Z RECONNECTING
+2018-09-24T13:04:40.406Z RECONNECTING
+2018-09-24T13:04:46.323Z RECONNECTING
+2018-09-24T13:04:52.252Z RECONNECTING
+2018-09-24T13:04:58.167Z RECONNECTING
+2018-09-24T13:11:58.112Z GEORG LOGGED IN!
