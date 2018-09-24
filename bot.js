@@ -5,6 +5,8 @@ const winston = require("winston");
 const fs = require("fs");
 const logDir = "log";
 const responses = require("./responses.json");
+const execSync = require("child_process").execSync;
+
 const client = new Discord.Client();
 
 if (!fs.existsSync(logDir)) {
@@ -249,9 +251,21 @@ launchBot();
 
 
 function launchBot(){
-	client.login(auth.token).catch((reason) => {
-		logger.info(reason);
-		logger.info("Trying again in 10 seconds");
-		setTimeout(launchBot, 10000);
-	});
+	client.login(auth.token)
+		.then(()=>{client.setTimeout(backup, 20000);})
+		.catch((reason) => {
+			logger.info(reason);
+			logger.info("Trying again in 10 seconds");
+			setTimeout(launchBot, 10000);
+		});
+}
+
+function backup(){
+	client.destroy();
+	try {
+		logger.info(execSync("sh backup.sh").toString());
+	} catch(e){
+		logger.info("ERROR: " + e);
+	}
+	setTimeout(launchBot,1000);
 }
