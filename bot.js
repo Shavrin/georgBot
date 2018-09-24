@@ -49,6 +49,10 @@ const handler = {
 				} else {
 					message.reply(row.source);
 				}
+			})
+			.catch(error => {
+				logger.info(error);
+				message.reply(responses.error);
 			});
 	},
 
@@ -72,14 +76,23 @@ const handler = {
 		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 			.then(row => {
 				if (!row) {
-					sql.run("INSERT INTO items (userID,name,source) VALUES (?,?,?)", [id, itemName, source]);
-					logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
-					message.reply(`${responses.createSuccess} ${itemName}!`);
-					return;
+					sql.run("INSERT INTO items (userID,name,source) VALUES (?,?,?)", [id, itemName, source])
+						.then(() => {
+							logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
+							message.reply(`${responses.createSuccess} ${itemName}!`);
+						})
+						.catch(error => {
+							logger.info(error);
+							message.reply(responses.error);
+						});
 				} else {
 					message.reply(responses.existingItem);
 					return;
 				}
+			})
+			.catch(error => {
+				logger.info(error);
+				message.reply(responses.error);
 			});
 	},
 
@@ -164,17 +177,30 @@ const handler = {
 			return;
 		}
 
-		sql.get(`SELECT * FROM items WHERE name="${itemName}"`).then(row => {
-			if (!row) {
-				message.reply(responses.couldntGet);
-			} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
-				sql.run(`UPDATE items SET source="${source}" WHERE name="${itemName}"`);
-				logger.info(`EDIT!   Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
-				message.reply(`${responses.editSuccess} ${itemName}!`);
-			} else {
-				message.reply(responses.editNoPermissions);
-			}
-		});
+		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
+			.then(row => {
+				if (!row) {
+					message.reply(responses.couldntGet);
+				} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
+					sql.run(`UPDATE items SET source="${source}" WHERE name="${itemName}"`)
+						.then(() => {
+							logger.info(`EDIT!   Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
+							message.reply(`${responses.editSuccess} ${itemName}!`);
+						})
+						.catch(error => {
+							logger.info(error);
+							message.reply(responses.error);
+						});
+
+				} else {
+					message.reply(responses.editNoPermissions);
+				}
+			})
+			.catch(error => {
+				logger.info(error);
+				message.reply(responses.error);
+			});
+
 	},
 
 	items: function(message) {
@@ -196,19 +222,29 @@ const handler = {
 					});
 					message.reply(cmds);
 				}
+			})
+			.catch(error => {
+				logger.info(error);
+				message.reply(responses.error);
 			});
 	},
 
 	random: function(message) {
 		logger.info(`RANDOM! Username->${message.author.username} AuthorID->${message.author.id}`);
 
-		sql.all("SELECT * FROM items").then(rows => {
-			if (rows.length === 0) {message.reply(responses.noItems);}
-			else {
-				let numberOfItems = rows.length;
-				const rand = Math.floor(Math.random() * numberOfItems);
-				message.reply(responses.random + rows[rand].source);
-			}});
+		sql.all("SELECT * FROM items")
+			.then(rows => {
+				if (rows.length === 0) {message.reply(responses.noItems);}
+				else {
+					let numberOfItems = rows.length;
+					const rand = Math.floor(Math.random() * numberOfItems);
+					message.reply(responses.random + rows[rand].source);
+				}
+			})
+			.catch(error => {
+				logger.info(error);
+				message.reply(responses.error);
+			});
 	}
 };
 
