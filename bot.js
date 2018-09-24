@@ -42,7 +42,7 @@ const handler = {
 
 		logger.info(`GET! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
 
-		sql.get(`SELECT * FROM commands WHERE name="${itemName}"`)
+		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 			.then(row => {
 				if (!row) {
 					message.reply(responses.couldntGet);
@@ -52,8 +52,7 @@ const handler = {
 			});
 	},
 
-	create: function(message, command) {
-		const itemName = command[2];
+	create: function(message, itemName, source) {
 		if (!itemName) {
 			message.reply(responses.provideNameAndUrl);
 			return;
@@ -62,24 +61,26 @@ const handler = {
 			message.reply(responses.badInput);
 			return;
 		}
-		const source = command[3];
 		if (!source) {
 			message.reply(responses.provideUrl);
 			return;
 		}
-		const author = message.author.id;
+		const
+			{id} = message.author,
+			username = message.author.username;
 
-		sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
-			if (!row) {
-				sql.run("INSERT INTO commands (userID,name,source) VALUES (?,?,?)", [author, itemName, source]);
-				logger.info(`CREATE! Username->${message.author.username} AuthorID->${author} ItemName->${itemName} Source->${source}`);
-				message.reply(`${responses.createSuccess} ${itemName}!`);
-				return;
-			} else {
-				message.reply(responses.existingItem);
-				return;
-			}
-		});
+		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
+			.then(row => {
+				if (!row) {
+					sql.run("INSERT INTO items (userID,name,source) VALUES (?,?,?)", [id, itemName, source]);
+					logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
+					message.reply(`${responses.createSuccess} ${itemName}!`);
+					return;
+				} else {
+					message.reply(responses.existingItem);
+					return;
+				}
+			});
 	},
 
 	delete: function(message, command) {
@@ -94,11 +95,11 @@ const handler = {
 			return;
 		}
 
-		sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
+		sql.get(`SELECT * FROM items WHERE name="${itemName}"`).then(row => {
 			if (!row) {
 				message.reply(responses.couldntGet);
 			} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
-				sql.run(`DELETE FROM commands WHERE name="${itemName}"`);
+				sql.run(`DELETE FROM items WHERE name="${itemName}"`);
 				logger.info(`DELETE! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
 				message.reply(`${responses.deleteSuccess} ${itemName}!`);
 			} else {
@@ -154,11 +155,11 @@ const handler = {
 			return;
 		}
 
-		sql.get(`SELECT * FROM commands WHERE name="${itemName}"`).then(row => {
+		sql.get(`SELECT * FROM items WHERE name="${itemName}"`).then(row => {
 			if (!row) {
 				message.reply(responses.couldntGet);
 			} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
-				sql.run(`UPDATE commands SET source="${source}" WHERE name="${itemName}"`);
+				sql.run(`UPDATE items SET source="${source}" WHERE name="${itemName}"`);
 				logger.info(`EDIT! Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
 				message.reply(`${responses.editSuccess} ${itemName}!`);
 			} else {
@@ -168,26 +169,31 @@ const handler = {
 	},
 
 	items: function(message) {
-		logger.info(`COMMANDS! Username->${message.author.username} AuthorID->${message.author.id}`);
+		const
+			{username} = message.author.username,
+			{id} = message.author.id;
+
+		logger.info(`ITEMS! Username->${username} AuthorID->${id}`);
 
 		let cmds = responses.items;
 
-		sql.all("SELECT * FROM commands").then(rows => {
-			if (rows.length === 0) {
-				message.reply(responses.noItems);
-			} else {
-				rows.forEach(row => {
-					cmds += row.name + "\n";
-				});
-				message.reply(cmds);
-			}
-		});
+		sql.all("SELECT * FROM items")
+			.then(rows => {
+				if (rows.length === 0) {
+					message.reply(responses.noItems);
+				} else {
+					rows.forEach(row => {
+						cmds += row.name + " | ";
+					});
+					message.reply(cmds);
+				}
+			});
 	},
 
 	random: function(message) {
 		logger.info(`RANDOM! Username->${message.author.username} AuthorID->${message.author.id}`);
 
-		sql.all("SELECT * FROM commands").then(rows => {
+		sql.all("SELECT * FROM items").then(rows => {
 			if (rows.length === 0) {message.reply(responses.noItems);}
 			else {
 				let numberOfItems = rows.length;
@@ -217,7 +223,10 @@ client.on("message", message => {
 				break;
 			}
 			case "create":{
-				handler.create(message, parameters);
+				const
+					itemName = parameters[2],
+					source = parameters[3];
+				handler.create(message, itemName, source);
 				break;
 			}
 			case "delete":{
@@ -273,5 +282,5 @@ function backup(){
 	setTimeout(launchBot,1000);
 }
 
-sql.open("./commands.sqlite");
+sql.open("./items.sqlite");
 launchBot();
