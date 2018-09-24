@@ -111,3 +111,5 @@ Ideas List
 5. My items
 6. Text strings
 7. Random quote( fetched from a wiki or something )
+8. Periodic Events ( quizes or sth like that )
+9. Point system?
