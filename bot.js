@@ -207,37 +207,42 @@ client.on("message", message => {
 	if (message.author.bot || message.channel.type === "dm") return;
 	// Check if message is starting with the hotword.
 	if (message.content.startsWith(config.hotword + " ")) {
-		// Removing hotword.
-		let parameters = message.content.split(" ");
-		parameters.splice(0, 1);
-		// Getting first parameter which is a command. Probably.
-		if(parameters[0]){
-			switch (parameters[0]) {
-			case "get":
-				// Passing an item name.
-				handler.get(message, parameters[1]);
-				break;
-			case "create":
-				handler.create(message, parameters);
-				break;
-			case "delete":
-				handler.delete(message, parameters);
-				break;
-			case "help":
-				handler.help(message, parameters);
-				break;
-			case "edit":
-				handler.edit(message, parameters);
-				break;
-			case "items":
-				handler.items(message);
-				break;
-			case "random":
-				handler.random(message);
-				break;
-			default:
+		const parameters = message.content.split(" ");
+		// Getting first parameter which is a command.
+		if(parameters[1]){
+			switch (parameters[1]) {
+			case "get":{
+				const itemName = parameters[2];
+				handler.get(message, itemName);
 				break;
 			}
+			case "create":{
+				handler.create(message, parameters);
+				break;
+			}
+			case "delete":{
+				handler.delete(message, parameters);
+				break;
+			}
+			case "help":{
+				handler.help(message, parameters);
+				break;
+			}
+			case "edit":{
+				handler.edit(message, parameters);
+				break;
+			}
+			case "items":{
+				handler.items(message);
+				break;
+			}
+			case "random":{
+				handler.random(message);
+				break;
+			}
+			default:{
+				break;
+			}}
 		}
 	}
 });
