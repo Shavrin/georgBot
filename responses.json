@@ -16,7 +16,7 @@
 	"helpRandom": "I can bring you the most random item I can find!",
 	"helpDefault": "I did not recognize this command. Type `georg help` for help.",
 	"helpItems": "lists all items in my database.",
-	"help": "here's the list of commands!\n`georg get NAME`\n`georg create NAME URL`\n`georg delete NAME`\n`georg edit NAME URL`\n`georg random`\n`georg items`\nFor more information, type `georg help COMMAND`",
+	"help": "here's the list of commands!\n`georg get NAME`\n`georg create NAME URL`\n`georg delete NAME`\n`georg edit NAME URL`\n`georg random`\n`georg items`\n`georg wiki`\nFor more information, type `georg help COMMAND`",
 	"editSuccess": "done! Edited",
 	"editNoPermissions": "you don't have permissions to edit this item.",
 	"items": "here is the list of all items I have: \n",
