@@ -34,7 +34,6 @@ const logger = winston.createLogger({
 });
 
 
-sql.open("./commands.sqlite");
 
 const georgDirectives = {
 	get: "get",
@@ -242,6 +241,17 @@ client.on("message", message => {
 		}
 	}
 });
+client.on("error", (error) => logger.info(error));
+client.on("reconnecting", () => logger.info("RECONNECTING"));
+sql.open("./commands.sqlite");
+
+launchBot();
 
 
-client.login(auth.token);
+function launchBot(){
+	client.login(auth.token).catch((reason) => {
+		logger.info(reason);
+		logger.info("Trying again in 10 seconds");
+		setTimeout(launchBot, 10000);
+	});
+}
