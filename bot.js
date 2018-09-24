@@ -6,7 +6,6 @@ const
 	execSync = require("child_process").execSync,
 	config = require("./config.json"),
 	responses = require("./responses.json");
-
 // Logger initialization start------------------
 
 // Creating a log folder if it doesn't exist
@@ -262,6 +261,19 @@ const handler = {
 				logger.info(error);
 				message.reply(responses.error);
 			});
+	},
+
+	wiki: function(message){
+		const {username, id} = message.author;
+		logger.info(`WIKI!   Username->${username} AuthorID->${id}`);
+		try {
+			const randomArticle = execSync("curl -Ls -o /dev/null -w %{url_effective} http://eurekaseven.wikia.com/wiki/Special:Random").toString();
+			message.reply(randomArticle);
+		}
+		catch (e) {
+			logger.info("ERROR: " + e);
+			message.reply(responses.error);
+		}
 	}
 };
 
@@ -318,6 +330,10 @@ client.on("message", message => {
 			}
 			case "random":{
 				handler.random(message);
+				break;
+			}
+			case "wiki":{
+				handler.wiki(message);
 				break;
 			}
 			default:{
