@@ -38,7 +38,7 @@ If the item with provided name already exists, Georg will inform you about that.
 
 Template: `georg create ITEMNAME URL`
 
-#### Example 
+#### Example
  **user**: georg create google https://www.google.com
 
 
@@ -80,13 +80,18 @@ Template: `georg help` | `georg help COMMAND`
 Fetches a random item from Georg's database.
 Template: `georg random`
 ***
+## wiki
+Fetches a random article link from the Eureka seveN Wiki.
+
+Template: `georg wiki`
+***
 # Backup
 Backup is done every 3 hours, all database changes and logs are sent to this repository.
 ***
 # Logging
 ***There is no god, only log ~ Confucius***
 
-Everything is logged to both files in the ./log folder.
+Everything is logged in the ./log folder.
 
 Logs are send to this repository along with the database. In case something goes wrong, check there.
 ***

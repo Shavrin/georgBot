@@ -174,6 +174,9 @@ const handler = {
 			case "items":
 				message.reply(responses.helpItems);
 				break;
+			case "wiki":
+				message.reply(responses.helpWiki);
+				break;
 			default:
 				message.reply(responses.helpDefault);
 				break;
@@ -266,6 +269,7 @@ const handler = {
 	wiki: function(message){
 		const {username, id} = message.author;
 		logger.info(`WIKI!   Username->${username} AuthorID->${id}`);
+
 		try {
 			const randomArticle = execSync("curl -Ls -o /dev/null -w %{url_effective} http://eurekaseven.wikia.com/wiki/Special:Random").toString();
 			message.reply(randomArticle);
