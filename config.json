@@ -2,6 +2,6 @@
     "token": "NEVER COMMIT THIS",
     "backupInterval": 10800000,
     "logDirectory": "log",
-    "logFilename": "logs.txt"
-
+    "logFilename": "logs.txt",
+    "hotword": "georg"
 }
