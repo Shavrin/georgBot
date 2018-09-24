@@ -1,18 +1,14 @@
 const Discord = require("discord.js");
-const auth = require("./auth.json");
 const sql = require("sqlite");
 const winston = require("winston");
 const fs = require("fs");
-const logDir = "log";
-const responses = require("./responses.json");
 const execSync = require("child_process").execSync;
+const config = require("./config.json");
+const responses = require("./responses.json");
 
-const client = new Discord.Client();
-
-if (!fs.existsSync(logDir)) {
-	fs.mkdirSync(logDir);
+if (!fs.existsSync(config.logDirectory)) {
+	fs.mkdirSync(config.logDirectory);
 }
-
 const { combine, timestamp, printf } = winston.format;
 const myFormat = printf(info => {
 	return `${info.timestamp} ${info.message}`;
@@ -23,13 +19,11 @@ const logger = winston.createLogger({
 		myFormat
 	),
 	transports: [
-		// colorize the output to the console
 		new (winston.transports.Console)({
-			colorize: true,
 			level: "info"
 		}),
 		new (winston.transports.File)({
-			filename: `${logDir}/commandsLog.txt`,
+			filename: `${config.logDirectory}/${config.logFilename}`,
 			level: "info"
 		})
 	]
@@ -208,6 +202,9 @@ function handleRandom(message) {
 		}});
 }
 
+
+const client = new Discord.Client();
+
 client.on("ready", () => {
 	logger.info("GEORG LOGGED IN!");
 });
@@ -245,14 +242,14 @@ client.on("message", message => {
 });
 client.on("error", (error) => logger.info(error));
 client.on("reconnecting", () => logger.info("RECONNECTING"));
-sql.open("./commands.sqlite");
-
-launchBot();
 
 
 function launchBot(){
-	client.login(auth.token)
-		.then(()=>{client.setTimeout(backup, 20000);})
+	client.login(config.token)
+		.then(() => {
+			// 3 hours
+			client.setTimeout(backup, config.backupInterval);
+		})
 		.catch((reason) => {
 			logger.info(reason);
 			logger.info("Trying again in 10 seconds");
@@ -269,3 +266,6 @@ function backup(){
 	}
 	setTimeout(launchBot,1000);
 }
+
+sql.open("./commands.sqlite");
+launchBot();
