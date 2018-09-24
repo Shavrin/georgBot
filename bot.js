@@ -29,18 +29,6 @@ const logger = winston.createLogger({
 	]
 });
 
-
-
-const georgDirectives = {
-	get: "get",
-	create: "create",
-	delete: "delete",
-	help: "help",
-	edit: "edit",
-	items: "items",
-	random: "random"
-};
-
 function handleGet(message, command) {
 	const secondParameter = command[2];
 	if (!secondParameter) {
@@ -118,25 +106,25 @@ function handleHelp(message, command) {
 
 	if (command[2]) {
 		switch (command[2]) {
-		case georgDirectives.get:
+		case "get":
 			message.reply(responses.helpGet);
 			break;
-		case georgDirectives.help:
+		case "help":
 			message.reply(responses.helpHelp);
 			break;
-		case georgDirectives.create:
+		case "create":
 			message.reply(responses.helpCreate);
 			break;
-		case georgDirectives.delete:
+		case "delete":
 			message.reply(responses.helpDelete);
 			break;
-		case georgDirectives.edit:
+		case "edit":
 			message.reply(responses.helpEdit);
 			break;
-		case georgDirectives.random:
+		case "random":
 			message.reply(responses.helpRandom);
 			break;
-		case georgDirectives.items:
+		case "items":
 			message.reply(responses.helpItems);
 			break;
 		default:
@@ -216,25 +204,25 @@ client.on("message", message => {
 		const firstParameter = command[1];
 
 		switch (firstParameter) {
-		case georgDirectives.get:
+		case "get":
 			handleGet(message, command);
 			break;
-		case georgDirectives.create:
+		case "create":
 			handleCreate(message, command);
 			break;
-		case georgDirectives.delete:
+		case "delete":
 			handleDelete(message, command);
 			break;
-		case georgDirectives.help:
+		case "help":
 			handleHelp(message, command);
 			break;
-		case georgDirectives.edit:
+		case "edit":
 			handleEdit(message, command);
 			break;
-		case georgDirectives.items:
+		case "items":
 			handleItems(message);
 			break;
-		case georgDirectives.random:
+		case "random":
 			handleRandom(message);
 			break;
 		}
