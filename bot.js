@@ -7,35 +7,40 @@ const
 	config = require("./config.json"),
 	responses = require("./responses.json");
 
-//Logger initialization start------------------
+// Logger initialization start------------------
+
+// Creating a log folder if it doesn't exist
 if (!fs.existsSync(config.logDirectory)) {
 	fs.mkdirSync(config.logDirectory);
 }
-const { combine, timestamp, printf } = winston.format;
-const myFormat = printf(info => {
-	return `${info.timestamp} ${info.message}`;
-});
-const logger = winston.createLogger({
-	format: combine(
-		timestamp(),
-		myFormat
-	),
-	transports: [
-		new (winston.transports.Console)({
-			level: "info"
-		}),
-		new (winston.transports.File)({
-			filename: `${config.logDirectory}/${config.logFilename}`,
-			level: "info"
-		})
-	]
-});
-//Logger initialization end--------------------
 
+const
+	{ combine, timestamp, printf } = winston.format,
+	myFormat = printf(info => {
+		return `${info.timestamp} ${info.message}`;
+	}),
+	logger = winston.createLogger({
+		format: combine(
+			timestamp(),
+			myFormat
+		),
+		transports: [
+			new (winston.transports.Console)({
+				level: "info"
+			}),
+			new (winston.transports.File)({
+				filename: `${config.logDirectory}/${config.logFilename}`,
+				level: "info"
+			})
+		]
+	});
+// Logger initialization end--------------------
 
 //Handling commands
 const handler = {
 	get: function(message, itemName) {
+		logger.info(`GET!    Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
+
 		if (!itemName) {
 			message.reply(responses.whatGet);
 		}
@@ -46,7 +51,6 @@ const handler = {
 						message.reply(responses.couldntGet);
 					} else {
 						message.reply(row.source);
-						logger.info(`GET!    Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
 					}
 				})
 				.catch(error => {
@@ -68,13 +72,14 @@ const handler = {
 		}
 		else {
 			const {id,username} = message.author;
+			logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
+
 			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 				.then(row => {
 					if (!row) {
 						sql.run("INSERT INTO items (userID,name,source) VALUES (?,?,?)", [id, itemName, source])
 							.then(() => {
 								message.reply(`${responses.createSuccess} ${itemName}!`);
-								logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
 							})
 							.catch(error => {
 								message.reply(responses.error);
@@ -100,6 +105,8 @@ const handler = {
 		}
 		else {
 			const {id, username} = message.author;
+			logger.info(`DELETE! Username->${username} AuthorID->${id} ItemName->${itemName}`);
+
 			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 				.then(row => {
 					if (!row) {
@@ -108,7 +115,6 @@ const handler = {
 						sql.run(`DELETE FROM items WHERE name="${itemName}"`)
 							.then(()=> {
 								message.reply(`${responses.deleteSuccess} ${itemName}!`);
-								logger.info(`DELETE! Username->${username} AuthorID->${id} ItemName->${itemName}`);
 							})
 							.catch(error => {
 								message.reply(responses.error);
@@ -129,6 +135,7 @@ const handler = {
 	help: function(message, command) {
 		const {id,username} = message.author;
 		logger.info(`HELP!   Username->${username} AuthorID->${id}`);
+
 		if (command[2]) {
 			switch (command[2]) {
 			case "get":
@@ -161,49 +168,42 @@ const handler = {
 		}
 	},
 
-	edit: function(message, command) {
-		const itemName = command[2];
+	edit: function(message, itemName, source) {
 		if (!itemName) {
 			message.reply(responses.provideNameAndUrl);
-			return;
 		}
-		const source = command[3];
-		if (!source) {
+		else if (!source) {
 			message.reply(responses.provideUrl);
-			return;
 		}
+		else {
+			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
+				.then(row => {
+					if (!row) {
+						message.reply(responses.couldntGet);
+					} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
+						sql.run(`UPDATE items SET source="${source}" WHERE name="${itemName}"`)
+							.then(() => {
+								message.reply(`${responses.editSuccess} ${itemName}!`);
+								logger.info(`EDIT!   Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
+							})
+							.catch(error => {
+								message.reply(responses.error);
+								logger.info(error);
+							});
 
-		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
-			.then(row => {
-				if (!row) {
-					message.reply(responses.couldntGet);
-				} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
-					sql.run(`UPDATE items SET source="${source}" WHERE name="${itemName}"`)
-						.then(() => {
-							message.reply(`${responses.editSuccess} ${itemName}!`);
-							logger.info(`EDIT!   Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
-						})
-						.catch(error => {
-							message.reply(responses.error);
-							logger.info(error);
-						});
-
-				} else {
-					message.reply(responses.editNoPermissions);
-				}
-			})
-			.catch(error => {
-				message.reply(responses.error);
-				logger.info(error);
-			});
-
+					} else {
+						message.reply(responses.editNoPermissions);
+					}
+				})
+				.catch(error => {
+					message.reply(responses.error);
+					logger.info(error);
+				});
+		}
 	},
 
 	items: function(message) {
-		const
-			{username} = message.author.username,
-			{id} = message.author.id;
-
+		const {username, id} = message.author;
 		sql.all("SELECT * FROM items")
 			.then(rows => {
 				if (rows.length === 0) {
@@ -224,10 +224,12 @@ const handler = {
 	},
 
 	random: function(message) {
-		logger.info(`RANDOM! Username->${message.author.username} AuthorID->${message.author.id}`);
+		const {username, id} = message.author;
 
 		sql.all("SELECT * FROM items")
 			.then(rows => {
+				logger.info(`RANDOM! Username->${username} AuthorID->${id}`);
+
 				if (rows.length === 0) {message.reply(responses.noItems);}
 				else {
 					let numberOfItems = rows.length;
@@ -242,6 +244,7 @@ const handler = {
 	}
 };
 
+// Georg logic starts here
 const client = new Discord.Client();
 
 client.on("ready", () => {
@@ -274,11 +277,15 @@ client.on("message", message => {
 				break;
 			}
 			case "help":{
-				handler.help(message, parameters);
+				const command = parameters[2];
+				handler.help(message, command);
 				break;
 			}
 			case "edit":{
-				handler.edit(message, parameters);
+				const
+					itemName = parameters[2],
+					source = parameters[3];
+				handler.edit(message, itemName, source);
 				break;
 			}
 			case "items":{
@@ -302,24 +309,32 @@ client.on("reconnecting", () => logger.info("RECONNECTING"));
 function launchBot(){
 	client.login(config.token)
 		.then(() => {
-			// 3 hours
+			//Backup timeout.
 			client.setTimeout(backup, config.backupInterval);
 		})
-		.catch((reason) => {
-			logger.info(reason);
+		.catch((error) => {
+			logger.info(error);
 			logger.info("Trying again in 10 seconds");
 			setTimeout(launchBot, 10000);
 		});
 }
-
+// Stops the client and executes the backup script. Then revives the bot.
 function backup(){
-	client.destroy();
-	try {
-		logger.info(execSync("sh backup.sh").toString());
-	} catch(e){
-		logger.info("ERROR: " + e);
-	}
-	setTimeout(launchBot,1000);
+	client.destroy()
+		.then(() => {
+			try {
+				logger.info(execSync("sh backup.sh").toString());
+				setTimeout(launchBot, 1000);
+			} catch (e) {
+				logger.info("ERROR: " + e);
+			}
+		})
+		.catch((error) => {
+			logger.info(error);
+			logger.info("Destroying the client again in 5 seconds.");
+			setTimeout(backup, 5000);
+		});
+
 }
 
 sql.open("./items.sqlite");
