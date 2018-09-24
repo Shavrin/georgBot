@@ -39,14 +39,15 @@ const
 //Handling commands
 const handler = {
 	get: function(message, itemName) {
-		const {username, id} = message.author;
-		logger.info(`GET!    Username->${username} AuthorID->${id} ItemName->${itemName}`);
 
 		// Checking if user provided the name of the item.
 		if (!itemName) {
 			message.reply(responses.whatGet);
 		}
 		else {
+			const {username, id} = message.author;
+			logger.info(`GET!    Username->${username} AuthorID->${id} ItemName->${itemName}`);
+
 			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
 				.then(row => {
 					if (!row) {
@@ -151,8 +152,8 @@ const handler = {
 		const {username, id} = message.author;
 		logger.info(`HELP!   Username->${username} AuthorID->${id}`);
 
-		if (command[2]) {
-			switch (command[2]) {
+		if (command) {
+			switch (command) {
 			case "get":
 				message.reply(responses.helpGet);
 				break;
@@ -231,7 +232,7 @@ const handler = {
 				if (rows.length === 0) {
 					message.reply(responses.noItems);
 				} else {
-					let {items} = responses.items;
+					let {items} = responses;
 					rows.forEach(row => {
 						items += row.name + " | ";
 					});
