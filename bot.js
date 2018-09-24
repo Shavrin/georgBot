@@ -1,10 +1,11 @@
-const Discord = require("discord.js");
-const sql = require("sqlite");
-const winston = require("winston");
-const fs = require("fs");
-const execSync = require("child_process").execSync;
-const config = require("./config.json");
-const responses = require("./responses.json");
+const
+	Discord = require("discord.js"),
+	sql = require("sqlite"),
+	winston = require("winston"),
+	fs = require("fs"),
+	execSync = require("child_process").execSync,
+	config = require("./config.json"),
+	responses = require("./responses.json");
 
 //Logger initialization start------------------
 if (!fs.existsSync(config.logDirectory)) {
@@ -37,102 +38,97 @@ const handler = {
 	get: function(message, itemName) {
 		if (!itemName) {
 			message.reply(responses.whatGet);
-			return;
 		}
-
-		logger.info(`GET!    Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
-
-		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
-			.then(row => {
-				if (!row) {
-					message.reply(responses.couldntGet);
-				} else {
-					message.reply(row.source);
-				}
-			})
-			.catch(error => {
-				logger.info(error);
-				message.reply(responses.error);
-			});
+		else {
+			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
+				.then(row => {
+					if (!row) {
+						message.reply(responses.couldntGet);
+					} else {
+						message.reply(row.source);
+						logger.info(`GET!    Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
+					}
+				})
+				.catch(error => {
+					message.reply(responses.error);
+					logger.info(error);
+				});
+		}
 	},
 
 	create: function(message, itemName, source) {
 		if (!itemName) {
 			message.reply(responses.provideNameAndUrl);
-			return;
 		}
-		if (itemName === "name") {
+		else if (itemName === "name") {
 			message.reply(responses.badInput);
-			return;
 		}
-		if (!source) {
+		else if (!source) {
 			message.reply(responses.provideUrl);
-			return;
 		}
-		const
-			{id} = message.author,
-			username = message.author.username;
-
-		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
-			.then(row => {
-				if (!row) {
-					sql.run("INSERT INTO items (userID,name,source) VALUES (?,?,?)", [id, itemName, source])
-						.then(() => {
-							logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
-							message.reply(`${responses.createSuccess} ${itemName}!`);
-						})
-						.catch(error => {
-							logger.info(error);
-							message.reply(responses.error);
-						});
-				} else {
-					message.reply(responses.existingItem);
-					return;
-				}
-			})
-			.catch(error => {
-				logger.info(error);
-				message.reply(responses.error);
-			});
+		else {
+			const {id,username} = message.author;
+			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
+				.then(row => {
+					if (!row) {
+						sql.run("INSERT INTO items (userID,name,source) VALUES (?,?,?)", [id, itemName, source])
+							.then(() => {
+								message.reply(`${responses.createSuccess} ${itemName}!`);
+								logger.info(`CREATE! Username->${username} AuthorID->${id} ItemName->${itemName} Source->${source}`);
+							})
+							.catch(error => {
+								message.reply(responses.error);
+								logger.info(error);
+							});
+					} else {
+						message.reply(responses.existingItem);
+					}
+				})
+				.catch(error => {
+					message.reply(responses.error);
+					logger.info(error);
+				});
+		}
 	},
 
 	delete: function(message, itemName) {
 		if (!itemName) {
 			message.reply(responses.provideName);
-			return;
 		}
-		if (itemName === "name") {
+		else if (itemName === "name") {
 			message.reply(responses.badInput);
-			return;
 		}
-		sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
-			.then(row => {
-				if (!row) {
-					message.reply(responses.couldntGet);
-				} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
-					sql.run(`DELETE FROM items WHERE name="${itemName}"`)
-						.then(()=> {
-							logger.info(`DELETE! Username->${message.author.username} AuthorID->${message.author.id} ItemName->${itemName}`);
-							message.reply(`${responses.deleteSuccess} ${itemName}!`);
-						})
-						.catch(error => {
-							logger.info(error);
-							message.reply(responses.error);
-						});
+		else {
+			const {id, username} = message.author;
+			sql.get(`SELECT * FROM items WHERE name="${itemName}"`)
+				.then(row => {
+					if (!row) {
+						message.reply(responses.couldntGet);
+					} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
+						sql.run(`DELETE FROM items WHERE name="${itemName}"`)
+							.then(()=> {
+								message.reply(`${responses.deleteSuccess} ${itemName}!`);
+								logger.info(`DELETE! Username->${username} AuthorID->${id} ItemName->${itemName}`);
+							})
+							.catch(error => {
+								message.reply(responses.error);
+								logger.info(error);
+							});
 
-				} else {
-					message.reply(responses.noPermissionsDelete);
-				}
-			})
-			.catch(error => {
-				logger.info(error);
-				message.reply(responses.error);
-			});
+					} else {
+						message.reply(responses.noPermissionsDelete);
+					}
+				})
+				.catch(error => {
+					message.reply(responses.error);
+					logger.info(error);
+				});
+		}
 	},
 
 	help: function(message, command) {
-		logger.info(`HELP!   Username->${message.author.username} AuthorID->${message.author.id}`);
-
+		const {id,username} = message.author;
+		logger.info(`HELP!   Username->${username} AuthorID->${id}`);
 		if (command[2]) {
 			switch (command[2]) {
 			case "get":
@@ -184,12 +180,12 @@ const handler = {
 				} else if (message.author.id === row.userID || message.member.roles.some(r => ["Administrator", "moderator"].includes(r.name))) {
 					sql.run(`UPDATE items SET source="${source}" WHERE name="${itemName}"`)
 						.then(() => {
-							logger.info(`EDIT!   Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
 							message.reply(`${responses.editSuccess} ${itemName}!`);
+							logger.info(`EDIT!   Username->${message.author.username} AuthorID->${message.author.id} NewItemName->${itemName}`);
 						})
 						.catch(error => {
-							logger.info(error);
 							message.reply(responses.error);
+							logger.info(error);
 						});
 
 				} else {
@@ -197,8 +193,8 @@ const handler = {
 				}
 			})
 			.catch(error => {
-				logger.info(error);
 				message.reply(responses.error);
+				logger.info(error);
 			});
 
 	},
@@ -208,24 +204,22 @@ const handler = {
 			{username} = message.author.username,
 			{id} = message.author.id;
 
-		logger.info(`ITEMS!  Username->${username} AuthorID->${id}`);
-
-		let cmds = responses.items;
-
 		sql.all("SELECT * FROM items")
 			.then(rows => {
 				if (rows.length === 0) {
 					message.reply(responses.noItems);
 				} else {
+					let {items} = responses.items;
 					rows.forEach(row => {
-						cmds += row.name + " | ";
+						items += row.name + " | ";
 					});
-					message.reply(cmds);
+					message.reply(items);
+					logger.info(`ITEMS!  Username->${username} AuthorID->${id}`);
 				}
 			})
 			.catch(error => {
-				logger.info(error);
 				message.reply(responses.error);
+				logger.info(error);
 			});
 	},
 
