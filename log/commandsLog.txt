@@ -81,3 +81,70 @@
 2018-09-24T12:24:45.685Z RECONNECTING
 2018-09-24T12:39:36.504Z GEORG LOGGED IN!
 2018-09-24T12:45:14.947Z GEORG LOGGED IN!
+2018-09-24T12:45:34.377Z Command failed: sh backup.sh
+ssh: Could not resolve hostname github.com: Name or service not known
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+2018-09-24T12:46:04.395Z RECONNECTING
+2018-09-24T12:46:09.901Z getaddrinfo ENOTFOUND gateway.discord.gg gateway.discord.gg:443
+2018-09-24T12:46:09.901Z RECONNECTING
+2018-09-24T12:46:15.409Z getaddrinfo ENOTFOUND gateway.discord.gg gateway.discord.gg:443
+2018-09-24T12:46:15.409Z RECONNECTING
+2018-09-24T12:47:15.827Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:47:15.828Z Trying again in 10 seconds
+2018-09-24T12:47:25.843Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:47:25.843Z Trying again in 10 seconds
+2018-09-24T12:48:40.829Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:48:40.830Z Trying again in 10 seconds
+2018-09-24T12:48:50.837Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:48:50.837Z Trying again in 10 seconds
+2018-09-24T12:49:00.839Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:49:00.840Z Trying again in 10 seconds
+2018-09-24T12:49:10.853Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:49:10.853Z Trying again in 10 seconds
+2018-09-24T12:49:20.866Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:49:20.866Z Trying again in 10 seconds
+2018-09-24T12:49:30.876Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:49:30.876Z Trying again in 10 seconds
+2018-09-24T12:49:40.882Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:49:40.883Z Trying again in 10 seconds
+2018-09-24T12:49:50.894Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:49:50.894Z Trying again in 10 seconds
+2018-09-24T12:50:00.905Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:50:00.905Z Trying again in 10 seconds
+2018-09-24T12:50:10.917Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:50:10.917Z Trying again in 10 seconds
+2018-09-24T12:50:20.930Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:50:20.930Z Trying again in 10 seconds
+2018-09-24T12:50:30.936Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:50:30.937Z Trying again in 10 seconds
+2018-09-24T12:50:40.947Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:50:40.947Z Trying again in 10 seconds
+2018-09-24T12:50:50.960Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:50:50.961Z Trying again in 10 seconds
+2018-09-24T12:51:00.972Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:51:00.972Z Trying again in 10 seconds
+2018-09-24T12:51:10.979Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:51:10.979Z Trying again in 10 seconds
+2018-09-24T12:51:20.991Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:51:20.991Z Trying again in 10 seconds
+2018-09-24T12:51:31.001Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:51:31.001Z Trying again in 10 seconds
+2018-09-24T12:51:41.006Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:51:41.007Z Trying again in 10 seconds
+2018-09-24T12:51:51.017Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:51:51.018Z Trying again in 10 seconds
+2018-09-24T12:52:01.022Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:52:01.022Z Trying again in 10 seconds
+2018-09-24T12:52:11.035Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:52:11.035Z Trying again in 10 seconds
+2018-09-24T12:52:21.045Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:52:21.046Z Trying again in 10 seconds
+2018-09-24T12:52:31.057Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:52:31.058Z Trying again in 10 seconds
+2018-09-24T12:52:41.070Z getaddrinfo ENOTFOUND discordapp.com discordapp.com:443
+2018-09-24T12:52:41.070Z Trying again in 10 seconds
+2018-09-24T12:52:51.703Z GEORG LOGGED IN!
