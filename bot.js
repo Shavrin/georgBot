@@ -246,18 +246,19 @@ const handler = {
 			});
 	},
 
-	random: function(message) {
+	random: function(message, contains) {
 		const {username, id} = message.author;
 		logger.info(`RANDOM! Username->${username} AuthorID->${id}`);
 
 		sql.all("SELECT * FROM items")
 			.then(rows => {
 				if (rows.length === 0) {message.reply(responses.noItems);}
-				else {
-					let numberOfItems = rows.length;
-					const rand = Math.floor(Math.random() * numberOfItems);
-					message.reply(responses.random + rows[rand].source);
+				else if(contains) {
+					rows = rows.filter(item => item.name.includes(contains));
 				}
+				const numberOfItems = rows.length;
+				const rand = Math.floor(Math.random() * numberOfItems);
+				message.reply(responses.random + rows[rand].source);
 			})
 			.catch(error => {
 				logger.info(error);
@@ -328,7 +329,8 @@ client.on("message", message => {
 				break;
 			}
 			case "random":{
-				handler.random(message);
+				const contains = parameters[2];
+				handler.random(message, contains);
 				break;
 			}
 			case "wiki":{
