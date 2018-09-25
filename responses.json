@@ -24,6 +24,7 @@
 	"random": "here's the most random thing I found!\n",
 	"badInput": "sorry, you can't use this name.",
 	"error": "uh oh, something went wrong! Please try again.",
-	"helpWiki": "I can connect to the Eureka seveN Wiki and bring you a random article!"
+	"helpWiki": "I can connect to the Eureka seveN Wiki and bring you a random article!",
+	"couldntRandom": "I didn't find anything with this keyword."
 
 }

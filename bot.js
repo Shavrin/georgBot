@@ -252,10 +252,10 @@ const handler = {
 
 		sql.all("SELECT * FROM items")
 			.then(rows => {
-				if (rows.length === 0) {message.reply(responses.noItems);}
-				else if(contains) {
+				if(contains) {
 					rows = rows.filter(item => item.name.includes(contains));
-				}
+				}	
+				if (rows.length === 0) {message.reply((contains ? responses.noItems : responses.couldntRandom)); return;}
 				const numberOfItems = rows.length;
 				const rand = Math.floor(Math.random() * numberOfItems);
 				message.reply(responses.random + rows[rand].source);
