@@ -86,14 +86,7 @@ Fetches a random article link from the Eureka seveN Wiki.
 Template: `georg wiki`
 ***
 # Backup
-Backup is done every 3 hours, all database changes and logs are sent to this repository.
-***
-# Logging
-***There is no god, only log ~ Confucius***
-
-Everything is logged in the ./log folder.
-
-Logs are send to this repository along with the database. In case something goes wrong, check there.
+Backup is done every 3 hours, all database changes are sent to this repository.
 ***
 # How to run
 
