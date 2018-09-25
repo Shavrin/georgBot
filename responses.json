@@ -13,7 +13,7 @@
 	"helpCreate": "if you give me a name and an url, I'll create a new item for you. For eg.\n`georg create niji https://www.google.com`",
 	"helpDelete": "if you give me a name of the item, I can delete it for you if you are the author/Mod/Admin. For eg.\n`georg delete niji`",
 	"helpEdit": "if you give me a name and a new url, I can edit the item for you if you are the author/Mod/Admin. For eg.\n`georg edit niji https://www.bing.com`",
-	"helpRandom": "I can bring you the most random item I can find!",
+	"helpRandom": "I can bring you the most random item I can find! If you give me a word, I will get you a random item containing that word.",
 	"helpDefault": "I did not recognize this command. Type `georg help` for help.",
 	"helpItems": "lists all items in my database.",
 	"help": "here's the list of commands!\n`georg get NAME`\n`georg create NAME URL`\n`georg delete NAME`\n`georg edit NAME URL`\n`georg random`\n`georg items`\n`georg wiki`\nFor more information, type `georg help COMMAND`",

@@ -23,9 +23,9 @@ For example, using command `create itemName url`, user can create an `itemName-u
 ***
 ## get
 Fetches an item from georg's database.
-Template: `georg get ITEMNAME`
+Template: `georg ITEMNAME`
 #### Example
-**user**: georg get google
+**user**: georg google
 
 **georg**: @user, https://www.google.com
 
@@ -79,6 +79,10 @@ Template: `georg help` | `georg help COMMAND`
 ## random
 Fetches a random item from Georg's database.
 Template: `georg random`
+
+If you specify a second parameter, Georg will get you only an item which contains the searched word.
+
+Template : `georg random go`
 ***
 ## wiki
 Fetches a random article link from the Eureka seveN Wiki.
