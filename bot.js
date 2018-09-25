@@ -255,7 +255,7 @@ const handler = {
 				if(contains) {
 					rows = rows.filter(item => item.name.includes(contains));
 				}	
-				if (rows.length === 0) {message.reply((contains ? responses.noItems : responses.couldntRandom)); return;}
+				if (rows.length === 0) {message.reply((contains ? responses.couldntRandom : responses.noItems)); return;}
 				const numberOfItems = rows.length;
 				const rand = Math.floor(Math.random() * numberOfItems);
 				message.reply(responses.random + rows[rand].source);
