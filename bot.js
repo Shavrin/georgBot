@@ -38,7 +38,6 @@ const
 //Handling commands
 const handler = {
 	get: function(message, itemName) {
-
 		// Checking if user provided the name of the item.
 		if (!itemName) {
 			message.reply(responses.whatGet);
@@ -292,18 +291,14 @@ client.on("message", message => {
 	if (message.author.bot || message.channel.type === "dm") return;
 
 	const parameters = message.content.split(" ");
+	const keyword = parameters[0].toLowerCase();
 
 	// Check if message is starting with the hotword.
-	if (parameters[0] === config.hotword) {
+	if (keyword === config.hotword) {
 
 		// First parameter should be a command.
 		if(parameters[1]){
 			switch (parameters[1]) {
-			case "get":{
-				const itemName = parameters[2];
-				handler.get(message, itemName);
-				break;
-			}
 			case "create":{
 				const
 					itemName = parameters[2],
@@ -340,7 +335,11 @@ client.on("message", message => {
 				handler.wiki(message);
 				break;
 			}
-			default:{
+			default: {
+				// Get handling.
+				// We have to make sure that the item name isn't the same as other commands.
+				const itemName = parameters[1];
+				handler.get(message, itemName);
 				break;
 			}}
 		}
