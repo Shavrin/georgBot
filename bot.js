@@ -349,6 +349,7 @@ client.on("message", message => {
 });
 client.on("error", (error) => logger.info(error));
 client.on("reconnecting", () => logger.info("RECONNECTING"));
+client.on("resumed", () => {logger.info("RESUMED")});
 
 // Launches the bot and sets the timer for backup.
 function launchBot(){
@@ -381,6 +382,11 @@ function backup(){
 		});
 
 }
+function healthcheck(){
+	logger.info("Status: " + client.status + " ping: " + client.ping);
+}
+
+setInterval(healthcheck, 60000);
 // Open the database connection.
 sql.open("./items.sqlite");
 launchBot();
