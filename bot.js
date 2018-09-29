@@ -225,7 +225,7 @@ const handler = {
 		}
 	},
 
-	items: function(message) {
+	items: function(message, search) {
 		const {username, id} = message.author;
 		logger.info(`ITEMS!  Username->${username} AuthorID->${id}`);
 
@@ -234,12 +234,22 @@ const handler = {
 				if (rows.length === 0) {
 					message.reply(responses.noItems);
 				} else {
-					let {items} = responses;
-					rows.forEach(row => {
-						items += row.name + " | ";
-					});
-					message.reply(items);
+					let items = (search ? responses.itemsSearch : responses.items);
+					if(search){
+						rows = rows.filter(item => item.name.includes(search));
+					}
+					if(rows.length === 0){
+						message.reply(responses.itemsSearchCouldntFind);
+					}
+					else {
+						items += "| ";
+						rows.forEach(row => {
+							items += row.name + " | ";
+						});
+						message.reply(items);
+					}
 				}
+
 			})
 			.catch(error => {
 				message.reply(responses.error);
@@ -332,7 +342,8 @@ client.on("message", message => {
 			break;
 		}
 		case "items":{
-			handler.items(message);
+			const search = parameters[2];
+			handler.items(message, search);
 			break;
 		}
 		case "random":{

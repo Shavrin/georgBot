@@ -20,6 +20,8 @@
 	"editSuccess": "done! Edited",
 	"editNoPermissions": "you don't have permissions to edit this item.",
 	"items": "here is the list of all items I have: \n",
+	"itemsSearch": "here's everything I found:\n",
+	"itemsSearchCouldntFind": "I couldn't find any item with this word.",
 	"noItems": "there are no items yet. Go create some!",
 	"random": "here's the most random thing I found!\n",
 	"badInput": "sorry, you can't use this name.",
