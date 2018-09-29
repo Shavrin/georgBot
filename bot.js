@@ -344,11 +344,12 @@ client.on("message", message => {
 			handler.wiki(message);
 			break;
 		}
-		default: {
-			// Get handling.
-			// We have to make sure that the item name isn't the same as other commands.
-			const itemName = parameters[1];
+		case "get":{
+			const itemName = parameters[2];
 			handler.get(message, itemName);
+			break;
+		}
+		default: {
 			break;
 		}}
 	}
