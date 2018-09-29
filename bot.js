@@ -5,6 +5,7 @@ const
 	fs = require("fs"),
 	execSync = require("child_process").execSync,
 	config = require("./config.json"),
+	auth = require("./auth.json"),
 	responses = require("./responses.json");
 // Logger initialization start------------------
 
@@ -254,7 +255,7 @@ const handler = {
 			.then(rows => {
 				if(contains) {
 					rows = rows.filter(item => item.name.includes(contains));
-				}	
+				}
 				if (rows.length === 0) {message.reply((contains ? responses.couldntRandom : responses.noItems)); return;}
 				const numberOfItems = rows.length;
 				const rand = Math.floor(Math.random() * numberOfItems);
@@ -353,7 +354,7 @@ client.on("resumed", () => {logger.info("RESUMED")});
 
 // Launches the bot and sets the timer for backup.
 function launchBot(){
-	client.login(config.token)
+	client.login(auth.token)
 		.then(() => {
 			//Backup timeout.
 			client.setTimeout(backup, config.backupInterval);

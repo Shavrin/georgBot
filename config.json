@@ -1,5 +1,4 @@
 {
-    "token": "NEVER COMMIT THIS",
     "backupInterval": 10800000,
     "logDirectory": "log",
     "logFilename": "logs.txt",
