@@ -289,68 +289,68 @@ client.on("ready", () => {
 	logger.info("GEORG LOGGED IN!");
 });
 client.on("message", message => {
+
+	// Check if the bot is mentioned, or the messages starts with the 'hotword' defined in config.json.
+	if(!message.isMentioned(client.user.id)) return;
+
 	// Ignore the bots and direct messages.
 	if (message.author.bot || message.channel.type === "dm") return;
 
 	const parameters = message.content.split(" ");
 	const keyword = parameters[0].toLowerCase();
 
-	// Check if message is starting with the hotword.
-	if (keyword === config.hotword) {
-
-		// First parameter should be a command.
-		if(parameters[1]){
-			switch (parameters[1]) {
-			case "create":{
-				const
-					itemName = parameters[2],
-					source = parameters[3];
-				handler.create(message, itemName, source);
-				break;
-			}
-			case "delete":{
-				const itemName = parameters[2];
-				handler.delete(message, itemName);
-				break;
-			}
-			case "help":{
-				const command = parameters[2];
-				handler.help(message, command);
-				break;
-			}
-			case "edit":{
-				const
-					itemName = parameters[2],
-					source = parameters[3];
-				handler.edit(message, itemName, source);
-				break;
-			}
-			case "items":{
-				handler.items(message);
-				break;
-			}
-			case "random":{
-				const contains = parameters[2];
-				handler.random(message, contains);
-				break;
-			}
-			case "wiki":{
-				handler.wiki(message);
-				break;
-			}
-			default: {
-				// Get handling.
-				// We have to make sure that the item name isn't the same as other commands.
-				const itemName = parameters[1];
-				handler.get(message, itemName);
-				break;
-			}}
+	// First parameter should be a command.
+	if(parameters[1]){
+		switch (parameters[1]) {
+		case "create":{
+			const
+				itemName = parameters[2],
+				source = parameters[3];
+			handler.create(message, itemName, source);
+			break;
 		}
+		case "delete":{
+			const itemName = parameters[2];
+			handler.delete(message, itemName);
+			break;
+		}
+		case "help":{
+			const command = parameters[2];
+			handler.help(message, command);
+			break;
+		}
+		case "edit":{
+			const
+				itemName = parameters[2],
+				source = parameters[3];
+			handler.edit(message, itemName, source);
+			break;
+		}
+		case "items":{
+			handler.items(message);
+			break;
+		}
+		case "random":{
+			const contains = parameters[2];
+			handler.random(message, contains);
+			break;
+		}
+		case "wiki":{
+			handler.wiki(message);
+			break;
+		}
+		default: {
+			// Get handling.
+			// We have to make sure that the item name isn't the same as other commands.
+			const itemName = parameters[1];
+			handler.get(message, itemName);
+			break;
+		}}
 	}
 });
 client.on("error", (error) => logger.info(error));
 client.on("reconnecting", () => logger.info("RECONNECTING"));
-client.on("resumed", () => {logger.info("RESUMED")});
+client.on("resumed", () => logger.info("RESUMED"));
 
 // Launches the bot and sets the timer for backup.
 function launchBot(){
