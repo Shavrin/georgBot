@@ -309,11 +309,10 @@ client.on("ready", () => {
 	logger.info("GEORG LOGGED IN!");
 });
 client.on("message", message => {
-
-	const parameters = message.content.split(" ");
-
 	// Ignore the bots and direct messages.
 	if (message.author.bot || message.channel.type === "dm") return;
+
+	const parameters = message.content.split(" ");
 
 	// Check if the bot is mentioned, or the messages starts with the 'get' alias defined in config.json.
 	if(!message.isMentioned(client.user.id)){
