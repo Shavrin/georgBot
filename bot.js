@@ -287,7 +287,7 @@ const handler = {
 		const {username, id} = message.author;
 		logger.info(`WIKI!   Username->${username} AuthorID->${id} Search->${search}`);
 		if(search){
-			message.reply(`http://eurekaseven.wikia.com/wiki/Special:Search?search=${search}`);
+			message.reply(`<http://eurekaseven.wikia.com/wiki/${search}>`);
 		}
 		else {
 			try {
