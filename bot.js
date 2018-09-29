@@ -277,17 +277,21 @@ const handler = {
 			});
 	},
 
-	wiki: function(message){
+	wiki: function(message, search){
 		const {username, id} = message.author;
 		logger.info(`WIKI!   Username->${username} AuthorID->${id}`);
-
-		try {
-			const randomArticle = execSync("curl -Ls -o /dev/null -w %{url_effective} http://eurekaseven.wikia.com/wiki/Special:Random").toString();
-			message.reply(randomArticle);
+		if(search){
+			message.reply(`http://eurekaseven.wikia.com/wiki/Special:Search?search=${search}`);
 		}
-		catch (e) {
-			logger.info("ERROR: " + e);
-			message.reply(responses.error);
+		else {
+			try {
+				const randomArticle = execSync("curl -Ls -o /dev/null -w %{url_effective} http://eurekaseven.wikia.com/wiki/Special:Random").toString();
+				message.reply(randomArticle);
+			}
+			catch (e) {
+				logger.info("ERROR: " + e);
+				message.reply(responses.error);
+			}
 		}
 	}
 };
@@ -352,7 +356,8 @@ client.on("message", message => {
 			break;
 		}
 		case "wiki":{
-			handler.wiki(message);
+			const search = parameters[2];
+			handler.wiki(message, search);
 			break;
 		}
 		case "get":{
