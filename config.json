@@ -2,5 +2,5 @@
     "backupInterval": 10800000,
     "logDirectory": "log",
     "logFilename": "logs.txt",
-    "hotword": "georg"
+    "getAlias": "%g"
 }

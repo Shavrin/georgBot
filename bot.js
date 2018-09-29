@@ -290,14 +290,19 @@ client.on("ready", () => {
 });
 client.on("message", message => {
 
-	// Check if the bot is mentioned, or the messages starts with the 'hotword' defined in config.json.
-	if(!message.isMentioned(client.user.id)) return;
+	const parameters = message.content.split(" ");
 
 	// Ignore the bots and direct messages.
 	if (message.author.bot || message.channel.type === "dm") return;
 
-	const parameters = message.content.split(" ");
-	const keyword = parameters[0].toLowerCase();
+	// Check if the bot is mentioned, or the messages starts with the 'get' alias defined in config.json.
+	if(!message.isMentioned(client.user.id)){
+		if (message.content.indexOf(config.getAlias) === 0) {
+			const itemName = parameters[1];
+			handler.get(message, itemName);
+			return;
+		}
+	}
 
 	// First parameter should be a command.
 	if(parameters[1]){
