@@ -42,6 +42,8 @@ const handler = {
 		// Checking if user provided the name of the item.
 		if (!itemName) {
 			message.reply(responses.whatGet);
+		} else if (itemName === "name"){
+			message.reply(responses.badInput);
 		}
 		else {
 			const {username, id} = message.author;
@@ -189,6 +191,10 @@ const handler = {
 	edit: function(message, itemName, source) {
 		if (!itemName) {
 			message.reply(responses.provideNameAndUrl);
+		}
+		// This string can cause vulnerability in the SQL below.
+		else if (itemName === "name") {
+			message.reply(responses.badInput);
 		}
 		else if (!source) {
 			message.reply(responses.provideUrl);
