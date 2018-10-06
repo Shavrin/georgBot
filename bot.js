@@ -65,7 +65,7 @@ const handler = {
 	create: function(message, itemName, source) {
 		// Checking if user provided the name for the new item.
 		if (!itemName) {
-			message.reply(responses.provideNameAndUrl);
+			message.reply(responses.provideNameAndText);
 		}
 		// This string can cause vulnerability in the SQL below.
 		else if (itemName === "name") {
@@ -73,7 +73,7 @@ const handler = {
 		}
 		// Checking if user provided the url for the new item.
 		else if (!source) {
-			message.reply(responses.provideUrl);
+			message.reply(responses.provideText);
 		} else {
 			const { username, id } = message.author;
 			logger.info(
@@ -201,13 +201,13 @@ const handler = {
 
 	edit: function(message, itemName, source) {
 		if (!itemName) {
-			message.reply(responses.provideNameAndUrl);
+			message.reply(responses.provideNameAndText);
 		}
 		// This string can cause vulnerability in the SQL below.
 		else if (itemName === "name") {
 			message.reply(responses.badInput);
 		} else if (!source) {
-			message.reply(responses.provideUrl);
+			message.reply(responses.provideText);
 		} else {
 			const { username, id } = message.author;
 			logger.info(
