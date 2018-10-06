@@ -335,7 +335,6 @@ client.on("ready", () => {
 client.on("message", message => {
 	// Ignore the bots and direct messages.
 	if (message.author.bot || message.channel.type === "dm") return;
-	console.log(message.content);
 
 	const parameters = message.content.split(" ");
 
