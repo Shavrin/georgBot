@@ -46,7 +46,7 @@ const handler = {
 			);
 
 			sql
-				.get(`SELECT * FROM items WHERE name="${itemName}"`)
+				.get("SELECT * FROM items WHERE name=?", itemName)
 				.then(row => {
 					if (!row) {
 						//The item doesn't exist.
@@ -82,7 +82,7 @@ const handler = {
 
 			// Checking if the item with this name already exists.
 			sql
-				.get(`SELECT * FROM items WHERE name="${itemName}"`)
+				.get("SELECT * FROM items WHERE name=?", itemName)
 				.then(row => {
 					if (!row) {
 						// We can use the name for the new item.
@@ -127,7 +127,7 @@ const handler = {
 
 			// Checking permissions for this item.
 			sql
-				.get(`SELECT * FROM items WHERE name="${itemName}"`)
+				.get("SELECT * FROM items WHERE name=?", itemName)
 				.then(row => {
 					if (!row) {
 						// The item doesn't exist.
@@ -141,7 +141,7 @@ const handler = {
 						)
 					) {
 						sql
-							.run(`DELETE FROM items WHERE name="${itemName}"`)
+							.run("DELETE FROM items WHERE name=?", itemName)
 							.then(() => {
 								message.reply(`${responses.deleteSuccess} ${itemName}!`);
 							})
@@ -215,7 +215,7 @@ const handler = {
 			);
 
 			sql
-				.get(`SELECT * FROM items WHERE name="${itemName}"`)
+				.get("SELECT * FROM items WHERE name=?", itemName)
 				.then(row => {
 					if (!row) {
 						// This item doesn't exist.
@@ -229,9 +229,7 @@ const handler = {
 						)
 					) {
 						sql
-							.run(
-								`UPDATE items SET source="${source}" WHERE name="${itemName}"`
-							)
+							.run("UPDATE items SET source=? WHERE name=?", [source, itemName])
 							.then(() => {
 								message.reply(`${responses.editSuccess} ${itemName}!`);
 							})
