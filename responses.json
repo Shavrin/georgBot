@@ -23,7 +23,7 @@
   "itemsSearch": "here's everything I found:\n",
   "itemsSearchCouldntFind": "I couldn't find any item with this word.",
   "noItems": "there are no items yet. Go create some!",
-  "random": "I picked:\n",
+  "random": "I picked",
   "badInput": "sorry, you can't use this name.",
   "error": "uh oh, something went wrong! Please try again.",
   "helpWiki": "I can connect to the Eureka seveN Wiki and bring you a random article or I can give you a link to the article you provided.",

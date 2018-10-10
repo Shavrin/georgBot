@@ -295,7 +295,7 @@ const handler = {
 				}
 				const numberOfItems = rows.length;
 				const rand = Math.floor(Math.random() * numberOfItems);
-				message.reply(responses.random + rows[rand].source);
+				message.reply(`${responses.random} ${rows[rand].name}!\n${rows[rand].source}`);
 			})
 			.catch(error => {
 				logger.info(error);
